@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OdontoSync — Sistema de Laboratório</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================
+   DENTAL FLOW — DESIGN SYSTEM
+   ========================================= */
+:root {
+  --navy:        #0A2540;
+  --navy-mid:    #0D2E50;
+  --navy-light:  #133660;
+  --blue:        #2E86DE;
+  --blue-light:  #4D9FE8;
+  --blue-glow:   rgba(46,134,222,0.18);
+  --white:       #FFFFFF;
+  --gray-50:     #F7F9FC;
+  --gray-100:    #EEF2F7;
+  --gray-200:    #D8E2EF;
+  --gray-300:    #A9BBCF;
+  --gray-500:    #6B859E;
+  --gray-700:    #3D556A;
+  --green:       #00C896;
+  --green-bg:    rgba(0,200,150,0.12);
+  --amber:       #F59E0B;
+  --amber-bg:    rgba(245,158,11,0.12);
+  --red:         #EF4444;
+  --red-bg:      rgba(239,68,68,0.12);
+  --purple:      #8B5CF6;
+  --purple-bg:   rgba(139,92,246,0.12);
+  --radius-sm:   6px;
+  --radius:      10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --shadow-sm:   0 1px 3px rgba(10,37,64,0.08), 0 1px 2px rgba(10,37,64,0.06);
+  --shadow:      0 4px 16px rgba(10,37,64,0.10), 0 2px 6px rgba(10,37,64,0.06);
+  --shadow-lg:   0 12px 40px rgba(10,37,64,0.14), 0 4px 12px rgba(10,37,64,0.08);
+  --shadow-blue: 0 4px 24px rgba(46,134,222,0.28);
+  --font-sans:   'DM Sans', sans-serif;
+  --font-mono:   'Space Mono', monospace;
+  --sidebar-w:   240px;
+  --header-h:    64px;
+  --transition:  .22s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); font-size: 14px; color: var(--navy); background: var(--gray-50); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: var(--font-sans); border: none; background: none; }
+input, select, textarea { font-family: var(--font-sans); }
+ul { list-style: none; }
+
+/* ── PAGE MANAGER ── */
+.page { display: none; }
+.page.active { display: block; }
+.app { display: flex; min-height: 100vh; }
+
+/* ── LOGIN ── */
+.login-page { min-height: 100vh; background: var(--navy); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.login-page::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(46,134,222,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(46,134,222,0.06) 1px, transparent 1px); background-size: 48px 48px; animation: gridDrift 20s linear infinite; }
+.login-page::after { content: ''; position: absolute; width: 600px; height: 600px; top: -200px; right: -200px; background: radial-gradient(circle, rgba(46,134,222,0.14) 0%, transparent 70%); border-radius: 50%; animation: pulsate 6s ease-in-out infinite; }
+@keyframes gridDrift { from { background-position: 0 0, 0 0; } to { background-position: 48px 48px, 48px 48px; } }
+@keyframes pulsate { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: .7; } }
+
+.login-card { position: relative; z-index: 2; background: rgba(13,46,80,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(46,134,222,0.2); border-radius: var(--radius-xl); padding: 48px 40px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg), 0 0 60px rgba(46,134,222,0.1); animation: fadeUp .5s ease forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+.login-logo__icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: var(--shadow-blue); }
+.login-logo__text { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -.3px; }
+.login-logo__text span { color: #00D4AA; }
+.login-card h1 { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+.login-subtitle { color: var(--gray-300); font-size: 14px; margin-bottom: 28px; }
+
+.profile-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; }
+.profile-btn { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(46,134,222,0.2); border-radius: var(--radius); padding: 12px 8px; color: var(--gray-300); font-size: 12px; font-weight: 500; transition: var(--transition); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.profile-btn .profile-icon { font-size: 22px; }
+.profile-btn:hover, .profile-btn.active { background: var(--blue-glow); border-color: var(--blue); color: var(--white); }
+.profile-btn.active { box-shadow: 0 0 0 3px rgba(46,134,222,0.2); }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-300); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.form-input { width: 100%; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(46,134,222,0.2); border-radius: var(--radius); padding: 10px 14px; color: var(--white); font-size: 14px; transition: var(--transition); outline: none; }
+.form-input::placeholder { color: var(--gray-500); }
+.form-input:focus { border-color: var(--blue); background: rgba(46,134,222,0.08); box-shadow: 0 0 0 3px rgba(46,134,222,0.15); }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 600; transition: var(--transition); white-space: nowrap; }
+.btn--primary { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%); color: var(--white); box-shadow: var(--shadow-blue); }
+.btn--primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(46,134,222,0.4); }
+.btn--secondary { background: var(--white); color: var(--navy); border: 1.5px solid var(--gray-200); box-shadow: var(--shadow-sm); }
+.btn--secondary:hover { border-color: var(--blue); color: var(--blue); }
+.btn--ghost { background: transparent; color: var(--gray-500); border: 1.5px solid var(--gray-200); }
+.btn--ghost:hover { background: var(--gray-100); color: var(--navy); }
+.btn--danger { background: var(--red-bg); color: var(--red); border: 1.5px solid rgba(239,68,68,0.2); }
+.btn--danger:hover { background: var(--red); color: var(--white); }
+.btn--success { background: var(--green-bg); color: var(--green); border: 1.5px solid rgba(0,200,150,0.2); }
+.btn--success:hover { background: var(--green); color: var(--white); }
+.btn--full { width: 100%; }
+.btn--lg { padding: 13px 24px; font-size: 15px; }
+.btn--sm { padding: 6px 14px; font-size: 12px; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; border-right: 1px solid rgba(255,255,255,0.05); }
+.sidebar__logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 10px; }
+.sidebar__logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--blue), var(--blue-light)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.sidebar__logo-text { font-size: 16px; font-weight: 700; color: var(--white); letter-spacing: -.2px; }
+.sidebar__logo-text span { color: #00D4AA; }
+.sidebar__profile { padding: 14px 16px; margin: 12px 12px 0; background: rgba(46,134,222,0.1); border: 1px solid rgba(46,134,222,0.2); border-radius: var(--radius); display: flex; align-items: center; gap: 10px; }
+.sidebar__avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--blue-light)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--white); flex-shrink: 0; }
+.sidebar__profile-name { font-size: 13px; font-weight: 600; color: var(--white); }
+.sidebar__profile-role { font-size: 11px; color: var(--blue-light); }
+.sidebar__nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+.sidebar__section-label { font-size: 10px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1px; padding: 0 8px; margin: 12px 0 6px; }
+.sidebar__item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); color: var(--gray-300); font-size: 13px; font-weight: 500; transition: var(--transition); cursor: pointer; position: relative; }
+.sidebar__item:hover { background: rgba(46,134,222,0.1); color: var(--white); }
+.sidebar__item.active { background: var(--blue-glow); color: var(--white); border: 1px solid rgba(46,134,222,0.3); }
+.sidebar__item.active::before { content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 3px; height: 20px; background: var(--blue); border-radius: 0 3px 3px 0; }
+.sidebar__item-icon { font-size: 16px; width: 20px; text-align: center; }
+.sidebar__badge { margin-left: auto; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; min-width: 18px; text-align: center; }
+.sidebar__footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+.sidebar__logout { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); color: var(--gray-500); font-size: 13px; font-weight: 500; transition: var(--transition); cursor: pointer; width: 100%; text-align: left; }
+.sidebar__logout:hover { background: var(--red-bg); color: var(--red); }
+
+/* ── MAIN LAYOUT ── */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 50; }
+.topbar__left { display: flex; align-items: center; gap: 16px; }
+.topbar__breadcrumb { font-size: 13px; color: var(--gray-500); display: flex; align-items: center; gap: 6px; }
+.topbar__breadcrumb strong { color: var(--navy); font-weight: 600; }
+.topbar__right { display: flex; align-items: center; gap: 12px; }
+.topbar__notif { position: relative; width: 36px; height: 36px; border-radius: var(--radius); background: var(--gray-100); border: 1.5px solid var(--gray-200); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: var(--transition); }
+.topbar__notif:hover { border-color: var(--blue); background: var(--blue-glow); }
+.topbar__notif-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; border: 2px solid var(--white); }
+.page-content { flex: 1; padding: 28px; animation: fadeIn .3s ease; }
+
+/* ── SCREEN MANAGEMENT ── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn .25s ease; }
+
+/* ── STATS ── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: var(--transition); box-shadow: var(--shadow-sm); }
+.stat-card:hover { box-shadow: var(--shadow); border-color: var(--blue); }
+.stat-card__header { display: flex; align-items: center; justify-content: space-between; }
+.stat-card__label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: .4px; }
+.stat-card__icon { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.stat-card__value { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+.stat-card__sub { font-size: 12px; color: var(--gray-500); }
+
+/* ── CARDS ── */
+.card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+.card__header { padding: 18px 22px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+.card__title { font-size: 15px; font-weight: 700; color: var(--navy); }
+.card__subtitle { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.card__body { padding: 22px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+
+/* ── ORDER LIST ── */
+.order-list { display: flex; flex-direction: column; gap: 10px; }
+.order-row { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow-sm); }
+.order-row:hover { border-color: var(--blue); box-shadow: var(--shadow); transform: translateX(2px); }
+.order-row__id { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--blue); background: var(--blue-glow); padding: 4px 10px; border-radius: var(--radius-sm); min-width: 80px; text-align: center; }
+.order-row__info { flex: 1; }
+.order-row__patient { font-size: 14px; font-weight: 600; color: var(--navy); }
+.order-row__desc { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.order-row__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.order-row__date { font-size: 12px; color: var(--gray-500); }
+
+/* ── BADGES ── */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.badge::before { content: '●'; font-size: 8px; }
+.badge--pending    { background: var(--amber-bg);  color: var(--amber); }
+.badge--review     { background: var(--blue-glow); color: var(--blue); }
+.badge--approved   { background: var(--green-bg);  color: var(--green); }
+.badge--rejected   { background: var(--red-bg);    color: var(--red); }
+.badge--designing  { background: var(--purple-bg); color: var(--purple); }
+.badge--milling    { background: var(--amber-bg);  color: var(--amber); }
+.badge--done       { background: var(--green-bg);  color: var(--green); }
+.badge--correction { background: var(--red-bg);    color: var(--red); }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; align-items: flex-start; gap: 0; margin: 24px 0; overflow-x: auto; padding-bottom: 8px; }
+.timeline-step { flex: 1; min-width: 80px; display: flex; flex-direction: column; align-items: center; position: relative; }
+.timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 18px; left: calc(50% + 18px); right: calc(-50% + 18px); height: 2px; background: var(--gray-200); z-index: 0; }
+.timeline-step.done:not(:last-child)::after { background: var(--blue); }
+.timeline-step__dot { width: 36px; height: 36px; border-radius: 50%; background: var(--gray-100); border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 14px; z-index: 1; position: relative; transition: var(--transition); }
+.timeline-step.done .timeline-step__dot { background: var(--blue); border-color: var(--blue); color: var(--white); box-shadow: 0 0 0 4px var(--blue-glow); }
+.timeline-step.active .timeline-step__dot { background: var(--white); border-color: var(--blue); color: var(--blue); box-shadow: 0 0 0 4px var(--blue-glow); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px var(--blue-glow); } 50% { box-shadow: 0 0 0 8px rgba(46,134,222,0.08); } }
+.timeline-step__label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-align: center; margin-top: 8px; max-width: 80px; }
+.timeline-step.done .timeline-step__label, .timeline-step.active .timeline-step__label { color: var(--navy); }
+
+/* ── FORMS ── */
+.app-form { display: flex; flex-direction: column; gap: 18px; }
+.app-input, .app-select, .app-textarea { width: 100%; background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--navy); transition: var(--transition); outline: none; font-family: var(--font-sans); }
+.app-input:focus, .app-select:focus, .app-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
+.app-label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.app-textarea { resize: vertical; min-height: 90px; }
+
+/* ── UPLOAD ── */
+.upload-zone { border: 2px dashed var(--gray-200); border-radius: var(--radius-lg); padding: 36px 20px; text-align: center; cursor: pointer; transition: var(--transition); background: var(--gray-50); }
+.upload-zone:hover { border-color: var(--blue); background: var(--blue-glow); }
+.upload-zone__icon { font-size: 36px; margin-bottom: 10px; }
+.upload-zone__text { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.upload-zone__sub  { font-size: 12px; color: var(--gray-500); }
+.upload-zone.has-file { border-color: var(--green); background: var(--green-bg); }
+
+/* ── MESSAGES ── */
+.messages-panel { display: flex; flex-direction: column; height: 320px; }
+.messages-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: var(--radius) var(--radius) 0 0; }
+.msg { display: flex; gap: 8px; max-width: 80%; }
+.msg--out { margin-left: auto; flex-direction: row-reverse; }
+.msg__avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--blue-light)); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--white); font-weight: 700; flex-shrink: 0; }
+.msg__bubble { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px 12px 12px 2px; padding: 8px 12px; font-size: 13px; line-height: 1.5; box-shadow: var(--shadow-sm); }
+.msg--out .msg__bubble { background: var(--blue); border-color: var(--blue); color: var(--white); border-radius: 12px 12px 2px 12px; }
+.msg__time { font-size: 10px; color: var(--gray-300); margin-top: 3px; }
+.msg--out .msg__time { text-align: right; color: rgba(255,255,255,.6); }
+.messages-input { display: flex; gap: 8px; padding: 12px 16px; background: var(--white); border: 1.5px solid var(--gray-200); border-top: none; border-radius: 0 0 var(--radius) var(--radius); }
+.messages-input input { flex: 1; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 13px; outline: none; transition: var(--transition); font-family: var(--font-sans); }
+.messages-input input:focus { border-color: var(--blue); }
+
+/* ── ALERTS ── */
+.alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--radius); font-size: 13px; margin-bottom: 16px; }
+.alert--info    { background: var(--blue-glow); border: 1px solid rgba(46,134,222,0.3); color: var(--navy); }
+.alert--success { background: var(--green-bg);  border: 1px solid rgba(0,200,150,.3);  color: #005940; }
+.alert--warning { background: var(--amber-bg);  border: 1px solid rgba(245,158,11,.3); color: #7c4f00; }
+.alert--error   { background: var(--red-bg);    border: 1px solid rgba(239,68,68,.3);  color: #7f1d1d; }
+.alert__icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { background: var(--gray-50); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid var(--gray-200); }
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); font-size: 13px; color: var(--navy); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--gray-50); }
+
+/* ── PAGE HEADER ── */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.page-header__title { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -.3px; }
+.page-header__sub { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
+/* ── TOAST ── */
+.toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+.toast { background: var(--navy); color: var(--white); padding: 12px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 10px; animation: toastIn .3s ease, toastOut .3s ease 2.7s forwards; border-left: 3px solid var(--blue); max-width: 320px; }
+.toast--success { border-color: var(--green); }
+.toast--error   { border-color: var(--red); }
+.toast--warning { border-color: var(--amber); }
+@keyframes toastIn  { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+/* ── UTILITIES ── */
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; }
+.mb-8 { margin-bottom: 8px; } .mb-16 { margin-bottom: 16px; } .mb-24 { margin-bottom: 24px; }
+.text-sm { font-size: 12px; } .text-muted { color: var(--gray-500); } .font-bold { font-weight: 700; } .text-center { text-align: center; }
+.divider { height: 1px; background: var(--gray-200); margin: 16px 0; }
+.empty-state { text-align: center; padding: 48px 24px; color: var(--gray-500); }
+.empty-state__icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state__text { font-size: 15px; font-weight: 600; color: var(--gray-700); margin-bottom: 4px; }
+.empty-state__sub  { font-size: 13px; }
+::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE: LOGIN
+     ============================================================ -->
+<div id="page-login" class="page active">
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo__icon">🦷</div>
+        <div class="login-logo__text">Odonto<span>Sync</span></div>
+      </div>
+      <h1>Acesse sua conta</h1>
+      <p class="login-subtitle">Plataforma digital odontológica integrada</p>
+      <div class="profile-selector">
+        <button class="profile-btn active" data-profile="dentist">
+          <span class="profile-icon">🦷</span> Dentista
+        </button>
+        <button class="profile-btn" data-profile="recepcao">
+          <span class="profile-icon">📋</span> Recepção
+        </button>
+        <button class="profile-btn" data-profile="cadista">
+          <span class="profile-icon">✏️</span> Cadista
+        </button>
+      </div>
+      <input type="hidden" id="selected-profile" value="dentist">
+      <div class="form-group">
+        <label class="form-label" for="login-email">E-mail</label>
+        <input class="form-input" type="email" id="login-email" placeholder="seu@email.com" value="demo@odontosync.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Senha</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••" value="demo1234">
+      </div>
+      <button class="btn btn--primary btn--full btn--lg" style="margin-top:8px" onclick="handleLogin()">
+        Entrar no sistema →
+      </button>
+      <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--gray-500)">
+        Demo: qualquer senha funciona. Selecione um perfil acima.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: DENTISTA
+     ============================================================ -->
+<div id="page-dentista" class="page">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar__logo">
+        <div class="sidebar__logo-icon">🦷</div>
+        <div class="sidebar__logo-text">Odonto<span>Sync</span></div>
+      </div>
+      <div class="sidebar__profile">
+        <div class="sidebar__avatar">CM</div>
+        <div>
+          <div class="sidebar__profile-name">Dr. Carlos Mendes</div>
+          <div class="sidebar__profile-role">Dentista</div>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <div class="sidebar__section-label">Principal</div>
+        <div class="sidebar__item active" onclick="showScreen('dentista','screen-d-dash')">
+          <span class="sidebar__item-icon">🏠</span> Dashboard
+        </div>
+        <div class="sidebar__item" onclick="initNewOrder()">
+          <span class="sidebar__item-icon">➕</span> Novo Pedido
+        </div>
+        <div class="sidebar__item" onclick="showAllDentista()">
+          <span class="sidebar__item-icon">📋</span> Meus Pedidos
+        </div>
+        <div class="sidebar__item" onclick="showTracking()">
+          <span class="sidebar__item-icon">📍</span> Tracking
+        </div>
+        <div class="sidebar__section-label" style="margin-top:16px">Conta</div>
+        <div class="sidebar__item" onclick="showScreen('dentista','screen-d-profile')">
+          <span class="sidebar__item-icon">👤</span> Perfil
+        </div>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="sidebar__logout" onclick="goLogin()"><span>🚪</span> Sair</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar__left">
+          <div class="topbar__breadcrumb"><span>OdontoSync</span><span>›</span><strong>Dentista</strong></div>
+        </div>
+        <div class="topbar__right">
+          <div class="topbar__notif">🔔<span class="topbar__notif-dot"></span></div>
+          <button class="btn btn--primary btn--sm" onclick="initNewOrder()">➕ Novo Pedido</button>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <div id="screen-d-dash" class="screen active">
+        <div class="page-content">
+          <div class="page-header">
+            <div>
+              <div class="page-header__title">Bom dia, Dr. Carlos! 👋</div>
+              <div class="page-header__sub">Resumo dos seus casos</div>
+            </div>
+            <button class="btn btn--primary" onclick="initNewOrder()">➕ Novo Pedido</button>
+          </div>
+          <div class="stats-grid" id="d-stats"></div>
+          <div class="card">
+            <div class="card__header">
+              <div><div class="card__title">📋 Pedidos Recentes</div><div class="card__subtitle">Clique para ver detalhes</div></div>
+              <button class="btn btn--ghost btn--sm" onclick="showAllDentista()">Ver todos</button>
+            </div>
+            <div class="card__body"><div class="order-list" id="d-order-list"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOVO PEDIDO -->
+      <div id="screen-d-new" class="screen">
+        <div class="page-content">
+          <div class="page-header">
+            <div>
+              <button class="btn btn--ghost btn--sm" onclick="showScreen('dentista','screen-d-dash')" style="margin-bottom:8px">← Voltar</button>
+              <div class="page-header__title">Novo Pedido</div>
+              <div class="page-header__sub">Preencha as informações do caso</div>
+            </div>
+          </div>
+          <div class="grid-1-2">
+            <div class="card">
+              <div class="card__header"><div class="card__title">📋 Informações do Caso</div></div>
+              <div class="card__body">
+                <div class="app-form">
+                  <div class="form-group"><label class="app-label">Nome do Paciente *</label><input class="app-input" id="no-patient" placeholder="Ex: Maria Silva"></div>
+                  <div class="form-group"><label class="app-label">Dente(s) *</label><input class="app-input" id="no-tooth" placeholder="Ex: 21, ou 11 a 22"></div>
+                  <div class="form-group"><label class="app-label">Tipo de Peça *</label>
+                    <select class="app-select" id="no-type">
+                      <option value="">Selecione...</option>
+                      <option>Coroa</option><option>Inlay</option><option>Faceta</option>
+                      <option>Provisório</option><option>Implante</option><option>Ponte</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="app-label">Material *</label>
+                    <select class="app-select" id="no-material">
+                      <option value="">Selecione...</option>
+                      <option>Zircônia</option><option>Cerâmica E.Max</option>
+                      <option>Cerâmica Feldspática</option><option>PMMA</option>
+                      <option>Zircônia Full Contour</option><option>Resina CAD</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="app-label">Cor / Shade</label><input class="app-input" id="no-shade" placeholder="Ex: A2, BL2..."></div>
+                  <div class="form-group"><label class="app-label">Observações</label><textarea class="app-textarea" id="no-notes" placeholder="Informações para o cadista..."></textarea></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div class="card">
+                <div class="card__header"><div class="card__title">📎 Arquivo STL</div></div>
+                <div class="card__body">
+                  <div class="upload-zone" id="stl-upload-zone" onclick="fakeUpload('stl-upload-zone')">
+                    <div class="upload-zone__icon">🦷</div>
+                    <div class="upload-zone__text">Clique para enviar o STL</div>
+                    <div class="upload-zone__sub">Formatos: .stl · .ply · .obj</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><div class="card__title">🔍 Checklist</div></div>
+                <div class="card__body" style="display:flex;flex-direction:column;gap:10px">
+                  <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked> Scan completo</label>
+                  <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked> Antagonistas</label>
+                  <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked> Shade definida</label>
+                  <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked> Prazo acordado</label>
+                </div>
+              </div>
+              <button class="btn btn--primary btn--full btn--lg" onclick="submitNewOrder()">📤 Enviar para Triagem</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODOS OS PEDIDOS -->
+      <div id="screen-d-all" class="screen">
+        <div class="page-content">
+          <div class="page-header">
+            <div><div class="page-header__title">Meus Pedidos</div></div>
+            <button class="btn btn--primary" onclick="initNewOrder()">➕ Novo</button>
+          </div>
+          <div class="card"><div class="card__body"><div class="order-list" id="d-all-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- DETALHE DO PEDIDO -->
+      <div id="screen-d-order" class="screen">
+        <div class="page-content" id="d-order-detail"></div>
+      </div>
+
+      <!-- TRACKING -->
+      <div id="screen-d-tracking" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">📍 Tracking de Pedidos</div></div>
+          <div class="card"><div class="card__header"><div class="card__title">Status em tempo real</div></div><div class="card__body" id="d-tracking-body"></div></div>
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <div id="screen-d-profile" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">👤 Perfil</div></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card__header"><div class="card__title">Dados Pessoais</div></div>
+              <div class="card__body">
+                <div class="app-form">
+                  <div class="form-group"><label class="app-label">Nome</label><input class="app-input" value="Dr. Carlos Mendes"></div>
+                  <div class="form-group"><label class="app-label">CRO</label><input class="app-input" value="SP-12345"></div>
+                  <div class="form-group"><label class="app-label">E-mail</label><input class="app-input" value="carlos@clinica.com"></div>
+                  <button class="btn btn--primary" onclick="showToast('Salvo!','success')">Salvar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: RECEPÇÃO
+     ============================================================ -->
+<div id="page-recepcao" class="page">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar__logo"><div class="sidebar__logo-icon">🦷</div><div class="sidebar__logo-text">Odonto<span>Sync</span></div></div>
+      <div class="sidebar__profile">
+        <div class="sidebar__avatar">AR</div>
+        <div><div class="sidebar__profile-name">Ana Recepção</div><div class="sidebar__profile-role">Recepção</div></div>
+      </div>
+      <nav class="sidebar__nav">
+        <div class="sidebar__section-label">Principal</div>
+        <div class="sidebar__item active" onclick="showScreen('recepcao','screen-r-dash')"><span class="sidebar__item-icon">🏠</span> Dashboard</div>
+        <div class="sidebar__item" onclick="showRPending()"><span class="sidebar__item-icon">🔍</span> Triagem<span class="sidebar__badge" id="r-badge">?</span></div>
+        <div class="sidebar__item" onclick="showRAll()"><span class="sidebar__item-icon">📋</span> Todos os Pedidos</div>
+        <div class="sidebar__item" onclick="showRReports()"><span class="sidebar__item-icon">📊</span> Relatórios</div>
+      </nav>
+      <div class="sidebar__footer"><button class="sidebar__logout" onclick="goLogin()"><span>🚪</span> Sair</button></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar__left"><div class="topbar__breadcrumb"><span>OdontoSync</span><span>›</span><strong>Recepção</strong></div></div>
+        <div class="topbar__right"><div class="topbar__notif">🔔<span class="topbar__notif-dot"></span></div></div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <div id="screen-r-dash" class="screen active">
+        <div class="page-content">
+          <div class="page-header"><div><div class="page-header__title">Painel da Recepção 📋</div><div class="page-header__sub">Triagem e gestão de pedidos</div></div></div>
+          <div class="stats-grid" id="r-stats"></div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="card__header"><div><div class="card__title">🔍 Aguardando Triagem</div><div class="card__subtitle">Validação imediata necessária</div></div></div>
+            <div class="card__body"><div class="order-list" id="r-pending-list"></div></div>
+          </div>
+          <div class="card">
+            <div class="card__header"><div class="card__title">📋 Todos os Pedidos</div></div>
+            <div class="card__body"><div class="order-list" id="r-order-list"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRIAGEM DETALHE -->
+      <div id="screen-r-triagem" class="screen">
+        <div class="page-content"><div id="r-triagem-content"></div></div>
+      </div>
+
+      <!-- ALL ORDERS -->
+      <div id="screen-r-all" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">Todos os Pedidos</div></div>
+          <div class="card"><div class="card__body"><div class="order-list" id="r-all-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="screen-r-reports" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">📊 Relatórios</div></div>
+          <div class="grid-2">
+            <div class="card"><div class="card__header"><div class="card__title">Por Status</div></div><div class="card__body" id="r-report-status"></div></div>
+            <div class="card"><div class="card__header"><div class="card__title">Por Material</div></div><div class="card__body" id="r-report-material"></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: CADISTA
+     ============================================================ -->
+<div id="page-cadista" class="page">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar__logo"><div class="sidebar__logo-icon">🦷</div><div class="sidebar__logo-text">Odonto<span>Sync</span></div></div>
+      <div class="sidebar__profile">
+        <div class="sidebar__avatar">PC</div>
+        <div><div class="sidebar__profile-name">Pedro Cadista</div><div class="sidebar__profile-role">Cadista / Designer</div></div>
+      </div>
+      <nav class="sidebar__nav">
+        <div class="sidebar__section-label">Principal</div>
+        <div class="sidebar__item active" onclick="showScreen('cadista','screen-c-dash')"><span class="sidebar__item-icon">🏠</span> Dashboard</div>
+        <div class="sidebar__item" onclick="showCQueue()"><span class="sidebar__item-icon">✏️</span> Fila de Design<span class="sidebar__badge" id="c-badge">?</span></div>
+        <div class="sidebar__item" onclick="showCAll()"><span class="sidebar__item-icon">📋</span> Todos os Casos</div>
+        <div class="sidebar__item" onclick="showCProduction()"><span class="sidebar__item-icon">⚙️</span> Produção</div>
+      </nav>
+      <div class="sidebar__footer"><button class="sidebar__logout" onclick="goLogin()"><span>🚪</span> Sair</button></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar__left"><div class="topbar__breadcrumb"><span>OdontoSync</span><span>›</span><strong>Cadista</strong></div></div>
+        <div class="topbar__right"><div class="topbar__notif">🔔<span class="topbar__notif-dot"></span></div></div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <div id="screen-c-dash" class="screen active">
+        <div class="page-content">
+          <div class="page-header"><div><div class="page-header__title">Estação de Design ✏️</div><div class="page-header__sub">Seus casos e fila de trabalho</div></div></div>
+          <div class="stats-grid" id="c-stats"></div>
+          <div id="c-corrections-banner" style="margin-bottom:16px"></div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="card__header"><div><div class="card__title">✏️ Fila de Design</div><div class="card__subtitle">Pedidos aprovados pela triagem</div></div></div>
+            <div class="card__body"><div class="order-list" id="c-queue-list"></div></div>
+          </div>
+          <div class="card">
+            <div class="card__header"><div class="card__title">⚙️ Em Usinagem</div></div>
+            <div class="card__body"><div class="order-list" id="c-milling-list"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESIGN DETALHE -->
+      <div id="screen-c-design" class="screen">
+        <div class="page-content"><div id="c-design-content"></div></div>
+      </div>
+
+      <!-- FILA -->
+      <div id="screen-c-queue" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">✏️ Fila de Design</div></div>
+          <div class="card"><div class="card__body"><div class="order-list" id="c-queue-full"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ALL -->
+      <div id="screen-c-all" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">📋 Todos os Casos</div></div>
+          <div class="card"><div class="card__body"><div class="order-list" id="c-all-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- PRODUÇÃO -->
+      <div id="screen-c-production" class="screen">
+        <div class="page-content">
+          <div class="page-header"><div class="page-header__title">⚙️ Controle de Produção</div></div>
+          <div class="grid-2">
+            <div class="card"><div class="card__header"><div class="card__title">Em Usinagem</div></div><div class="card__body" id="c-prod-milling"></div></div>
+            <div class="card"><div class="card__header"><div class="card__title">Finalizados</div></div><div class="card__body" id="c-prod-done"></div></div>
+          </div>
+          <div class="card" style="margin-top:20px">
+            <div class="card__header"><div class="card__title">📋 Checklist de Usinagem</div></div>
+            <div class="card__body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Verificar espessura mínima</label>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Confirmar material no bloco</label>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Calibrar fresadora</label>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Validar posicionamento</label>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Inspeção pós-usinagem</label>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox"> Registrar no sistema</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+/* ====== STATE ====== */
+const AppState = {
+  currentPage: 'login',
+  orders: [
+    { id:'DF-001', patient:'Maria Silva',     procedure:'Coroa Unitária - Dente 21',   type:'Coroa',     material:'Zircônia',              dentist:'Dr. Carlos Mendes', date:'2025-07-10', status:'design',     stlFile:'caso_21_maria.stl',     notes:'Shade A2. Bruxismo — reforçar oclusal.', messages:[{from:'dentist',text:'Atenção ao shade A2.',time:'10:22'},{from:'cadist',text:'Shade A2 confirmado!',time:'10:35'}], timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'], tStep:2 },
+    { id:'DF-002', patient:'João Rodrigues',  procedure:'Inlay/Onlay - Dente 36',       type:'Inlay',     material:'Cerâmica E.Max',         dentist:'Dra. Ana Beatriz',  date:'2025-07-11', status:'review',     stlFile:'caso_36_joao.stl',      notes:'Checar contatos proximais.', messages:[{from:'dentist',text:'Favor checar contatos proximais.',time:'14:10'}], timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'], tStep:1 },
+    { id:'DF-003', patient:'Paula Ferreira',  procedure:'Faceta - Dentes 11 a 22',      type:'Faceta',    material:'Cerâmica Feldspática',   dentist:'Dr. Carlos Mendes', date:'2025-07-08', status:'done',       stlFile:'caso_11-22_paula.stl',  notes:'', messages:[{from:'dentist',text:'Aprovado! Ficou excelente.',time:'09:00'},{from:'cadist',text:'Seguindo para produção!',time:'09:05'}], timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'], tStep:5 },
+    { id:'DF-004', patient:'Roberto Lima',    procedure:'Provisório - Implante 46',     type:'Provisório',material:'PMMA',                   dentist:'Dra. Ana Beatriz',  date:'2025-07-12', status:'pending',    stlFile:null,                    notes:'', messages:[], timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'], tStep:0 },
+    { id:'DF-005', patient:'Fernanda Costa',  procedure:'Coroa sobre Implante - 16',    type:'Coroa',     material:'Zircônia Full Contour',  dentist:'Dr. Carlos Mendes', date:'2025-07-09', status:'correction', stlFile:'caso_16_fernanda.stl',  notes:'Reduzir contato proximal mesial.', messages:[{from:'dentist',text:'Contato mesial forte. Favor ajustar.',time:'16:30'},{from:'cadist',text:'Vou corrigir já!',time:'16:45'}], timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'], tStep:3 }
+  ],
+  nextId: 6,
+  selectedId: null
+};
+
+const stlNames = ['scan_caso_novo.stl','digitalizacao_paciente.stl','modelo_3d_final.stl','intraoral_scan.stl'];
+
+/* ====== HELPERS ====== */
+function getOrder(id) { return AppState.orders.find(o=>o.id===id); }
+function statusLabel(s) { return {pending:'Aguardando',review:'Em Triagem',approved:'Aprovado',rejected:'Devolvido',design:'Em Design',correction:'Ajustes',milling:'Usinando',done:'Finalizado'}[s]||s; }
+function statusClass(s) { return {pending:'badge--pending',review:'badge--review',approved:'badge--approved',rejected:'badge--rejected',design:'badge--designing',correction:'badge--correction',milling:'badge--milling',done:'badge--done'}[s]||'badge--pending'; }
+function fmtDate(d) { return new Date(d).toLocaleDateString('pt-BR'); }
+function badge(s) { return `<span class="badge ${statusClass(s)}">${statusLabel(s)}</span>`; }
+function now() { return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+
+function showToast(msg, type='') {
+  const icons = {success:'✅',error:'❌',warning:'⚠️','':'ℹ️'};
+  const t = document.createElement('div');
+  t.className = `toast toast--${type}`;
+  t.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(()=>t.remove(), 3200);
+}
+
+/* ====== PAGE NAV ====== */
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+  AppState.currentPage = pageId;
+}
+function goLogin() { showPage('login'); }
+
+function showScreen(page, screenId) {
+  const pageEl = document.getElementById('page-'+page);
+  pageEl.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el = pageEl.querySelector('#'+screenId);
+  if(el) el.classList.add('active');
+  pageEl.querySelectorAll('.sidebar__item').forEach(i=>i.classList.remove('active'));
+}
+
+/* ====== LOGIN ====== */
+document.querySelectorAll('.profile-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.profile-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('selected-profile').value = btn.dataset.profile;
+  });
+});
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-password').value;
+  const prof  = document.getElementById('selected-profile').value;
+  if(!email||!pass){ showToast('Preencha os campos.','error'); return; }
+  showToast(`Bem-vindo(a)! Carregando...`,'success');
+  setTimeout(()=>{
+    if(prof==='dentist')  { showPage('dentista'); initDentista(); }
+    if(prof==='recepcao') { showPage('recepcao'); initRecepcao(); }
+    if(prof==='cadista')  { showPage('cadista');  initCadista(); }
+  }, 700);
+}
+
+/* ====== RENDER HELPERS ====== */
+function renderTimeline(o) {
+  const icons = ['📋','🔍','✏️','✅','⚙️','🏁'];
+  return `<div class="timeline">${o.timeline.map((l,i)=>`
+    <div class="timeline-step ${i<o.tStep?'done':i===o.tStep?'active':''}">
+      <div class="timeline-step__dot">${i<o.tStep?'✓':icons[i]}</div>
+      <div class="timeline-step__label">${l}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderOrderRows(orders, clickFn, emptyMsg='Nenhum pedido.') {
+  if(!orders.length) return `<div class="empty-state"><div class="empty-state__icon">📭</div><div class="empty-state__text">${emptyMsg}</div></div>`;
+  return orders.map(o=>`
+    <div class="order-row" onclick="${clickFn}('${o.id}')">
+      <div class="order-row__id">${o.id}</div>
+      <div class="order-row__info">
+        <div class="order-row__patient">${o.patient}</div>
+        <div class="order-row__desc">${o.procedure}</div>
+      </div>
+      <div class="order-row__meta">${badge(o.status)}<div class="order-row__date">${fmtDate(o.date)}</div><span style="color:var(--gray-300)">›</span></div>
+    </div>`).join('');
+}
+
+function renderMsgs(msgs, myRole) {
+  if(!msgs.length) return '<div class="text-sm text-muted text-center" style="padding:16px">Sem mensagens.</div>';
+  return msgs.map(m=>`
+    <div class="msg ${m.from===myRole?'msg--out':''}">
+      <div class="msg__avatar">${m.from==='dentist'?'DR':m.from==='cadist'?'CA':'RE'}</div>
+      <div><div class="msg__bubble">${m.text}</div><div class="msg__time">${m.time}</div></div>
+    </div>`).join('');
+}
+
+/* ====== FAKE UPLOAD ====== */
+function fakeUpload(zoneId) {
+  const zone = document.getElementById(zoneId);
+  if(!zone) return;
+  const name = stlNames[Math.floor(Math.random()*stlNames.length)];
+  zone.classList.add('has-file');
+  zone.querySelector('.upload-zone__text').textContent = name;
+  zone.querySelector('.upload-zone__sub').textContent = '2.4 MB · Pronto para envio';
+  zone._filename = name;
+  showToast('STL carregado: '+name,'success');
+}
+
+/* ============================================================
+   DENTISTA
+   ============================================================ */
+function initDentista() {
+  renderDStats();
+  renderDOrders();
+  showScreen('dentista','screen-d-dash');
+}
+
+function renderDStats() {
+  const el = document.getElementById('d-stats'); if(!el) return;
+  const ords = AppState.orders;
+  const t=ords.length, a=ords.filter(o=>!['done','rejected'].includes(o.status)).length,
+        d=ords.filter(o=>o.status==='done').length, p=ords.filter(o=>o.status==='pending').length;
+  el.innerHTML = `
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Total</span><div class="stat-card__icon" style="background:var(--blue-glow)">📋</div></div><div class="stat-card__value">${t}</div><div class="stat-card__sub">Todos os casos</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Ativos</span><div class="stat-card__icon" style="background:var(--purple-bg)">⚡</div></div><div class="stat-card__value">${a}</div><div class="stat-card__sub">Em andamento</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Finalizados</span><div class="stat-card__icon" style="background:var(--green-bg)">✅</div></div><div class="stat-card__value">${d}</div><div class="stat-card__sub">Concluídos</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Pendentes</span><div class="stat-card__icon" style="background:var(--amber-bg)">⏳</div></div><div class="stat-card__value">${p}</div><div class="stat-card__sub">Aguardando STL</div></div>`;
+}
+
+function renderDOrders() {
+  const el = document.getElementById('d-order-list'); if(!el) return;
+  el.innerHTML = renderOrderRows(AppState.orders, 'dViewOrder');
+}
+
+function dViewOrder(id) {
+  const o = getOrder(id); if(!o) return;
+  AppState.selectedId = id;
+  const corrAlert = o.status==='correction' ? `<div class="alert alert--warning"><span class="alert__icon">⚠️</span><div><strong>Ajuste solicitado!</strong><br>${o.notes}</div></div>` : '';
+  const designInfo = o.status==='design' ? `<div class="alert alert--info"><span class="alert__icon">✏️</span><div>Design em elaboração. Você será notificado quando estiver pronto.</div></div>` : '';
+  const approveBar = o.status==='approved' ? `<div class="alert alert--success"><span class="alert__icon">🎉</span><div><strong>Design pronto para aprovação!</strong> Revise e decida.</div></div>` : '';
+  const btns = o.status==='approved' ? `<button class="btn btn--success" onclick="dApprove('${id}')">✅ Aprovar Design</button><button class="btn btn--danger" onclick="dReqCorrection('${id}')">🔄 Pedir Ajuste</button>` : '';
+  
+  document.getElementById('d-order-detail').innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="flex gap-8" style="align-items:center;margin-bottom:6px">
+          <button class="btn btn--ghost btn--sm" onclick="showScreen('dentista','screen-d-dash')">← Voltar</button>
+          ${badge(o.status)}
+        </div>
+        <div class="page-header__title">${o.patient}</div>
+        <div class="page-header__sub">${o.procedure} · ${o.material} · ${o.id}</div>
+      </div>
+      <div class="flex gap-8">${btns}</div>
+    </div>
+    ${corrAlert}${designInfo}${approveBar}
+    ${renderTimeline(o)}
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card">
+        <div class="card__header"><div class="card__title">📋 Informações</div></div>
+        <div class="card__body">
+          <table class="data-table">
+            <tr><td class="text-muted">Paciente</td><td class="font-bold">${o.patient}</td></tr>
+            <tr><td class="text-muted">Procedimento</td><td>${o.procedure}</td></tr>
+            <tr><td class="text-muted">Material</td><td>${o.material}</td></tr>
+            <tr><td class="text-muted">Data</td><td>${fmtDate(o.date)}</td></tr>
+            <tr><td class="text-muted">Arquivo STL</td><td>${o.stlFile?`📎 ${o.stlFile}`:'<span class="text-muted">Não enviado</span>'}</td></tr>
+          </table>
+          ${o.notes?`<div class="divider"></div><div class="text-sm"><strong>Obs:</strong> ${o.notes}</div>`:''}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__header"><div class="card__title">💬 Mensagens</div></div>
+        <div class="card__body" style="padding:0">
+          <div class="messages-panel">
+            <div class="messages-list" id="d-msgs">${renderMsgs(o.messages,'dentist')}</div>
+            <div class="messages-input">
+              <input type="text" id="d-msg-in" placeholder="Mensagem..." onkeypress="if(event.key==='Enter')dSendMsg('${id}')">
+              <button class="btn btn--primary btn--sm" onclick="dSendMsg('${id}')">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  showScreen('dentista','screen-d-order');
+}
+
+function dApprove(id) {
+  const o=getOrder(id); o.status='milling'; o.tStep=4;
+  showToast('Design aprovado! Enviado para produção.','success');
+  renderDStats(); renderDOrders(); dViewOrder(id);
+}
+function dReqCorrection(id) {
+  const note = prompt('Descreva o ajuste necessário:');
+  if(!note) return;
+  const o=getOrder(id); o.notes=note; o.status='correction'; o.tStep=3;
+  o.messages.push({from:'dentist',text:'Ajuste: '+note,time:now()});
+  showToast('Ajuste solicitado ao cadista.','warning');
+  renderDStats(); renderDOrders(); dViewOrder(id);
+}
+function dSendMsg(id) {
+  const inp=document.getElementById('d-msg-in'); if(!inp||!inp.value.trim()) return;
+  const o=getOrder(id); o.messages.push({from:'dentist',text:inp.value.trim(),time:now()});
+  inp.value='';
+  const list=document.getElementById('d-msgs'); list.innerHTML=renderMsgs(o.messages,'dentist'); list.scrollTop=list.scrollHeight;
+}
+
+function initNewOrder() {
+  document.getElementById('no-patient').value='';
+  document.getElementById('no-tooth').value='';
+  document.getElementById('no-type').value='';
+  document.getElementById('no-material').value='';
+  document.getElementById('no-notes').value='';
+  const z=document.getElementById('stl-upload-zone');
+  z.classList.remove('has-file'); z._filename=null;
+  z.querySelector('.upload-zone__text').textContent='Clique para enviar o STL';
+  z.querySelector('.upload-zone__sub').textContent='Formatos: .stl · .ply · .obj';
+  showScreen('dentista','screen-d-new');
+}
+
+function submitNewOrder() {
+  const p=document.getElementById('no-patient').value;
+  const ty=document.getElementById('no-type').value;
+  const m=document.getElementById('no-material').value;
+  const to=document.getElementById('no-tooth').value;
+  const n=document.getElementById('no-notes').value;
+  if(!p||!ty||!m||!to){ showToast('Preencha todos os campos obrigatórios.','error'); return; }
+  const stl=document.getElementById('stl-upload-zone')._filename;
+  const newO={id:`DF-00${AppState.nextId++}`,patient:p,procedure:`${ty} - Dente ${to}`,type:ty,material:m,dentist:'Dr. Carlos Mendes',date:new Date().toISOString().split('T')[0],status:'review',stlFile:stl,notes:n,messages:[],timeline:['Pedido','Triagem','Design','Aprovação','Produção','Entrega'],tStep:1};
+  AppState.orders.unshift(newO);
+  renderDStats(); renderDOrders();
+  showToast(`Pedido ${newO.id} criado e enviado para triagem!`,'success');
+  showScreen('dentista','screen-d-dash');
+}
+
+function showAllDentista() {
+  document.getElementById('d-all-list').innerHTML=renderOrderRows(AppState.orders,'dViewOrder');
+  showScreen('dentista','screen-d-all');
+}
+function showTracking() {
+  const body=document.getElementById('d-tracking-body');
+  body.innerHTML=AppState.orders.map(o=>`
+    <div style="margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div><strong>${o.id}</strong> · ${o.patient} <span class="text-muted text-sm">· ${o.procedure}</span></div>
+        ${badge(o.status)}
+      </div>
+      ${renderTimeline(o)}
+    </div><div class="divider"></div>`).join('');
+  showScreen('dentista','screen-d-tracking');
+}
+
+/* ============================================================
+   RECEPÇÃO
+   ============================================================ */
+function initRecepcao() {
+  renderRStats(); renderRLists();
+  showScreen('recepcao','screen-r-dash');
+}
+
+function renderRStats() {
+  const el=document.getElementById('r-stats'); if(!el) return;
+  const pending=AppState.orders.filter(o=>o.status==='review').length;
+  const inProd=AppState.orders.filter(o=>['design','milling','done'].includes(o.status)).length;
+  const rejected=AppState.orders.filter(o=>o.status==='rejected').length;
+  el.innerHTML=`
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Triagem Pendente</span><div class="stat-card__icon" style="background:var(--amber-bg)">📥</div></div><div class="stat-card__value">${pending}</div><div class="stat-card__sub">Aguardando validação</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Em Produção</span><div class="stat-card__icon" style="background:var(--blue-glow)">🔄</div></div><div class="stat-card__value">${inProd}</div><div class="stat-card__sub">No fluxo produtivo</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Devolvidos</span><div class="stat-card__icon" style="background:var(--red-bg)">↩️</div></div><div class="stat-card__value">${rejected}</div><div class="stat-card__sub">Para correção</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Total</span><div class="stat-card__icon" style="background:var(--green-bg)">📊</div></div><div class="stat-card__value">${AppState.orders.length}</div><div class="stat-card__sub">Todos os pedidos</div></div>`;
+  const badge=document.getElementById('r-badge'); if(badge) badge.textContent=pending;
+}
+
+function renderRLists() {
+  const pending=AppState.orders.filter(o=>o.status==='review');
+  const el=document.getElementById('r-pending-list');
+  if(el) el.innerHTML=pending.length ? renderOrderRows(pending,'rViewOrder') : '<div class="empty-state"><div class="empty-state__icon">✅</div><div class="empty-state__text">Nenhum pedido aguardando triagem</div></div>';
+  const el2=document.getElementById('r-order-list');
+  if(el2) el2.innerHTML=renderOrderRows(AppState.orders,'rViewOrder');
+}
+
+function rViewOrder(id) {
+  const o=getOrder(id); if(!o) return;
+  AppState.selectedId=id;
+  const isRev=o.status==='review';
+  const isDone=o.status==='done';
+  document.getElementById('r-triagem-content').innerHTML=`
+    <div class="page-header">
+      <div>
+        <button class="btn btn--ghost btn--sm" onclick="showScreen('recepcao','screen-r-dash')" style="margin-bottom:8px">← Voltar</button>
+        <div class="page-header__title">${o.patient}</div>
+        <div class="page-header__sub">${o.procedure} · ${o.id} · ${fmtDate(o.date)}</div>
+      </div>
+      <div class="flex gap-8">
+        ${isRev?`<button class="btn btn--success" onclick="rApprove('${id}')">✅ Aprovar e Encaminhar</button><button class="btn btn--danger" onclick="rReject('${id}')">↩ Devolver</button>`:''}
+        ${isDone?`<button class="btn btn--primary" onclick="rFinalize('${id}')">🏁 Finalizar Pedido</button>`:''}
+      </div>
+    </div>
+    ${isRev?`<div class="alert alert--warning"><span class="alert__icon">🔍</span><div>Pedido aguardando validação. Verifique as informações e o arquivo STL antes de encaminhar.</div></div>`:''}
+    ${renderTimeline(o)}
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card">
+        <div class="card__header"><div class="card__title">📋 Detalhes</div>${badge(o.status)}</div>
+        <div class="card__body">
+          <table class="data-table">
+            <tr><td class="text-muted">Paciente</td><td class="font-bold">${o.patient}</td></tr>
+            <tr><td class="text-muted">Dentista</td><td>${o.dentist}</td></tr>
+            <tr><td class="text-muted">Procedimento</td><td>${o.procedure}</td></tr>
+            <tr><td class="text-muted">Material</td><td>${o.material}</td></tr>
+            <tr><td class="text-muted">STL</td><td>${o.stlFile?`<span style="color:var(--green)">📎 ${o.stlFile}</span>`:'<span style="color:var(--red)">⚠ Não enviado</span>'}</td></tr>
+          </table>
+          ${o.notes?`<div class="divider"></div><div class="text-sm"><strong>Obs:</strong> ${o.notes}</div>`:''}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__header"><div class="card__title">📬 Atividade</div></div>
+        <div class="card__body">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:10px"><span>📋</span><div><div class="text-sm font-bold">Pedido criado</div><div class="text-sm text-muted">${fmtDate(o.date)} · ${o.dentist}</div></div></div>
+            ${o.stlFile?`<div style="display:flex;gap:10px"><span>📤</span><div><div class="text-sm font-bold">STL Enviado</div><div class="text-sm text-muted">${o.stlFile}</div></div></div>`:''}
+            ${['design','correction','milling','done'].includes(o.status)?`<div style="display:flex;gap:10px"><span>✅</span><div><div class="text-sm font-bold">Triagem aprovada</div><div class="text-sm text-muted">Encaminhado para cadista</div></div></div>`:''}
+            ${o.status==='done'?`<div style="display:flex;gap:10px"><span>🏁</span><div><div class="text-sm font-bold">Trabalho concluído</div></div></div>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  showScreen('recepcao','screen-r-triagem');
+}
+
+function rApprove(id) {
+  const o=getOrder(id);
+  if(!o.stlFile) showToast('Atenção: pedido sem STL!','warning');
+  o.status='design'; o.tStep=2;
+  showToast(`Pedido ${id} aprovado e encaminhado ao cadista!`,'success');
+  renderRStats(); renderRLists(); rViewOrder(id);
+}
+function rReject(id) {
+  const r=prompt('Motivo da devolução:'); if(!r) return;
+  const o=getOrder(id); o.notes=r; o.status='rejected'; o.tStep=1;
+  showToast(`Pedido ${id} devolvido.`,'warning');
+  renderRStats(); renderRLists(); rViewOrder(id);
+}
+function rFinalize(id) {
+  const o=getOrder(id); o.status='done'; o.tStep=5;
+  showToast(`Pedido ${id} finalizado!`,'success');
+  renderRStats(); renderRLists();
+  showScreen('recepcao','screen-r-dash');
+}
+
+function showRPending() {
+  document.getElementById('r-all-list') && (document.getElementById('r-all-list').innerHTML=renderOrderRows(AppState.orders,'rViewOrder'));
+  showScreen('recepcao','screen-r-triagem');
+  if(!AppState.selectedId) document.getElementById('r-triagem-content').innerHTML=`<div class="empty-state"><div class="empty-state__icon">🔍</div><div class="empty-state__text">Selecione um pedido para triar</div></div>`;
+}
+function showRAll() {
+  document.getElementById('r-all-list').innerHTML=renderOrderRows(AppState.orders,'rViewOrder');
+  showScreen('recepcao','screen-r-all');
+}
+function showRReports() {
+  const statuses=['pending','review','design','correction','milling','done','rejected'];
+  document.getElementById('r-report-status').innerHTML=statuses.map(s=>{
+    const c=AppState.orders.filter(o=>o.status===s).length;
+    const p=Math.round(c/AppState.orders.length*100)||0;
+    return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-sm">${statusLabel(s)}</span><span class="text-sm font-bold">${c}</span></div><div style="height:6px;background:var(--gray-100);border-radius:3px"><div style="width:${p}%;height:100%;background:var(--blue);border-radius:3px;transition:.4s"></div></div></div>`;
+  }).join('');
+  const mc={};AppState.orders.forEach(o=>{mc[o.material]=(mc[o.material]||0)+1;});
+  document.getElementById('r-report-material').innerHTML=Object.entries(mc).map(([m,c])=>
+    `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-100)"><span class="text-sm">${m}</span><span class="badge badge--review">${c}</span></div>`
+  ).join('');
+  showScreen('recepcao','screen-r-reports');
+}
+
+/* ============================================================
+   CADISTA
+   ============================================================ */
+function initCadista() {
+  renderCStats(); renderCLists();
+  showScreen('cadista','screen-c-dash');
+}
+
+function renderCStats() {
+  const el=document.getElementById('c-stats'); if(!el) return;
+  const q=AppState.orders.filter(o=>o.status==='design').length;
+  const cor=AppState.orders.filter(o=>o.status==='correction').length;
+  const m=AppState.orders.filter(o=>o.status==='milling').length;
+  const d=AppState.orders.filter(o=>o.status==='done').length;
+  el.innerHTML=`
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Fila de Design</span><div class="stat-card__icon" style="background:var(--purple-bg)">✏️</div></div><div class="stat-card__value">${q}</div><div class="stat-card__sub">Para trabalhar</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Ajustes</span><div class="stat-card__icon" style="background:var(--red-bg)">🔄</div></div><div class="stat-card__value">${cor}</div><div class="stat-card__sub">Correções solicitadas</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Usinando</span><div class="stat-card__icon" style="background:var(--amber-bg)">⚙️</div></div><div class="stat-card__value">${m}</div><div class="stat-card__sub">Na fresadora</div></div>
+    <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Finalizados</span><div class="stat-card__icon" style="background:var(--green-bg)">🏁</div></div><div class="stat-card__value">${d}</div><div class="stat-card__sub">Concluídos</div></div>`;
+  const b=document.getElementById('c-badge'); if(b) b.textContent=q+cor;
+}
+
+function renderCLists() {
+  const design=AppState.orders.filter(o=>o.status==='design');
+  const milling=AppState.orders.filter(o=>o.status==='milling');
+  const corr=AppState.orders.filter(o=>o.status==='correction');
+  const el=document.getElementById('c-queue-list'); if(el) el.innerHTML=renderOrderRows(design,'cViewOrder','Nenhum pedido na fila');
+  const el2=document.getElementById('c-milling-list'); if(el2) el2.innerHTML=milling.length?renderOrderRows(milling,'cViewOrder'):`<div class="empty-state"><div class="empty-state__icon">⚙️</div><div class="empty-state__text">Nenhuma peça em usinagem</div></div>`;
+  const banner=document.getElementById('c-corrections-banner');
+  if(banner && corr.length) {
+    banner.innerHTML=`<div class="alert alert--warning"><span class="alert__icon">⚠️</span><div><strong>${corr.length} ajuste(s) solicitado(s)!</strong>${corr.map(o=>`<br>• ${o.id} — ${o.patient}: ${o.notes}`).join('')}</div></div>`;
+  } else if(banner) banner.innerHTML='';
+}
+
+function cViewOrder(id) {
+  const o=getOrder(id); if(!o) return;
+  AppState.selectedId=id;
+  const isWork=['design','correction'].includes(o.status);
+  const isMill=o.status==='milling'; const isDone=o.status==='done';
+  document.getElementById('c-design-content').innerHTML=`
+    <div class="page-header">
+      <div>
+        <button class="btn btn--ghost btn--sm" onclick="showScreen('cadista','screen-c-dash')" style="margin-bottom:8px">← Voltar</button>
+        <div class="page-header__title">${o.patient}</div>
+        <div class="page-header__sub">${o.procedure} · ${o.material} · ${o.id}</div>
+      </div>
+      <div class="flex gap-8">
+        ${isWork?`<button class="btn btn--primary" onclick="cSubmitDesign('${id}')">📤 Enviar para Aprovação</button>`:''}
+        ${isMill?`<button class="btn btn--success" onclick="cFinish('${id}')">🏁 Concluir Trabalho</button>`:''}
+      </div>
+    </div>
+    ${o.status==='correction'?`<div class="alert alert--warning"><span class="alert__icon">⚠️</span><div><strong>Ajuste solicitado:</strong> ${o.notes}</div></div>`:''}
+    ${isMill?`<div class="alert alert--info"><span class="alert__icon">⚙️</span><div>Design aprovado. Peça em usinagem. Clique "Concluir" ao terminar.</div></div>`:''}
+    ${isDone?`<div class="alert alert--success"><span class="alert__icon">🏁</span><div>Trabalho finalizado!</div></div>`:''}
+    ${renderTimeline(o)}
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card">
+        <div class="card__header"><div class="card__title">🦷 Ficha Técnica</div>${badge(o.status)}</div>
+        <div class="card__body">
+          <table class="data-table">
+            <tr><td class="text-muted">Paciente</td><td class="font-bold">${o.patient}</td></tr>
+            <tr><td class="text-muted">Procedimento</td><td>${o.procedure}</td></tr>
+            <tr><td class="text-muted">Material</td><td><strong>${o.material}</strong></td></tr>
+            <tr><td class="text-muted">Dentista</td><td>${o.dentist}</td></tr>
+            <tr><td class="text-muted">STL</td><td>${o.stlFile?`📎 ${o.stlFile}`:'—'}</td></tr>
+          </table>
+          ${o.notes?`<div class="divider"></div><div class="text-sm"><strong>Obs:</strong> ${o.notes}</div>`:''}
+          ${isWork?`
+          <div class="divider"></div>
+          <div class="app-form">
+            <div class="form-group"><label class="app-label">Notas de Design</label><textarea class="app-textarea" id="c-notes" placeholder="Anotações técnicas..."></textarea></div>
+            <div class="upload-zone" id="c-upload" onclick="fakeUpload('c-upload')"><div class="upload-zone__icon">🎨</div><div class="upload-zone__text">Anexar arquivo de design</div><div class="upload-zone__sub">Clique para simular upload</div></div>
+          </div>`:''}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__header"><div class="card__title">💬 Chat com Dentista</div></div>
+        <div class="card__body" style="padding:0">
+          <div class="messages-panel">
+            <div class="messages-list" id="c-msgs">${renderMsgs(o.messages,'cadist')}</div>
+            <div class="messages-input">
+              <input type="text" id="c-msg-in" placeholder="Mensagem para o dentista..." onkeypress="if(event.key==='Enter')cSendMsg('${id}')">
+              <button class="btn btn--primary btn--sm" onclick="cSendMsg('${id}')">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  showScreen('cadista','screen-c-design');
+  const msgList=document.getElementById('c-msgs'); if(msgList) msgList.scrollTop=msgList.scrollHeight;
+}
+
+function cSubmitDesign(id) {
+  const o=getOrder(id); o.status='approved'; o.tStep=3;
+  o.messages.push({from:'cadist',text:'Design concluído! Aguardando sua aprovação.',time:now()});
+  showToast('Design enviado para aprovação!','success');
+  renderCStats(); renderCLists(); cViewOrder(id);
+}
+function cFinish(id) {
+  const o=getOrder(id); o.status='done'; o.tStep=5;
+  showToast('Trabalho finalizado e entregue!','success');
+  renderCStats(); renderCLists();
+  showScreen('cadista','screen-c-dash');
+}
+function cSendMsg(id) {
+  const inp=document.getElementById('c-msg-in'); if(!inp||!inp.value.trim()) return;
+  const o=getOrder(id); o.messages.push({from:'cadist',text:inp.value.trim(),time:now()});
+  inp.value='';
+  const list=document.getElementById('c-msgs'); list.innerHTML=renderMsgs(o.messages,'cadist'); list.scrollTop=list.scrollHeight;
+}
+
+function showCQueue() {
+  document.getElementById('c-queue-full').innerHTML=renderOrderRows(
+    AppState.orders.filter(o=>['design','correction'].includes(o.status)),'cViewOrder','Nenhum caso na fila');
+  showScreen('cadista','screen-c-queue');
+}
+function showCAll() {
+  document.getElementById('c-all-list').innerHTML=renderOrderRows(
+    AppState.orders.filter(o=>['design','correction','milling','done'].includes(o.status)),'cViewOrder');
+  showScreen('cadista','screen-c-all');
+}
+function showCProduction() {
+  const mill=AppState.orders.filter(o=>o.status==='milling');
+  const done=AppState.orders.filter(o=>o.status==='done');
+  document.getElementById('c-prod-milling').innerHTML=mill.length?mill.map(o=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+      <div><div class="font-bold text-sm">${o.patient}</div><div class="text-sm text-muted">${o.id} · ${o.material}</div></div>
+      <button class="btn btn--success btn--sm" onclick="cFinish('${o.id}');showCProduction()">✓ Concluir</button>
+    </div>`).join(''):'<div class="text-sm text-muted">Nenhuma peça em usinagem.</div>';
+  document.getElementById('c-prod-done').innerHTML=done.length?done.map(o=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+      <div><div class="font-bold text-sm">${o.patient}</div><div class="text-sm text-muted">${o.id} · ${o.material}</div></div>
+      <span class="badge badge--done">Finalizado</span>
+    </div>`).join(''):'<div class="text-sm text-muted">Nenhum item finalizado.</div>';
+  showScreen('cadista','screen-c-production');
+}
+</script>
+</body>
+</html>
