@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro de Usuário – Facilita Lab</title>
+    <title>Editar Usuário – Facilita Lab</title>
     <link rel="stylesheet" href="/css/layout.css" />
     <link rel="stylesheet" href="/css/cadastro-usuario.css" />
 </head>
@@ -15,8 +15,8 @@
 
     <main class="content">
         <div class="page-header">
-            <h1>Novo Usuário</h1>
-            <span class="page-sub">Preencha os dados para cadastrar</span>
+            <h1>Editar Usuário</h1>
+            <span class="page-sub">Atualize os dados do usuário</span>
         </div>
 
         <div class="card">
@@ -31,11 +31,6 @@
             </div>
 
             <div class="field">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required/>
-            </div>
-
-            <div class="field">
                 <label for="perfil">Perfil</label>
                 <select id="perfil">
                     <option value="">Selecione...</option>
@@ -46,14 +41,25 @@
                 </select>
             </div>
 
-            <button id="btnCadastrar" onclick="cadastrar()">Cadastrar</button>
+            <div class="field">
+                <label for="senha">Nova senha</label>
+                <input type="password" id="senha" placeholder="Deixe em branco para manter a senha atual"/>
+                <small>Deixe em branco para manter a senha atual</small>
+            </div>
+
+            <div class="field">
+                <label for="confirmarSenha">Confirmar senha</label>
+                <input type="password" id="confirmarSenha" placeholder="Repita a nova senha"/>
+            </div>
+
+            <button id="btnSalvar" onclick="salvar()">Salvar Alterações</button>
             <div id="mensagem"></div>
         </div>
     </main>
 
 </div>
 
-<script src="/js/cadastro-usuario.js"></script>
+<script src="/js/editar-usuario.js"></script>
 
 </body>
 </html>

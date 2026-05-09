@@ -2,6 +2,7 @@ package com.facilitalab.service;
 
 import java.util.List;
 
+import com.facilitalab.dtos.UsuarioUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import com.facilitalab.dtos.UsuarioCreateDTO;
@@ -65,11 +66,10 @@ public class UsuarioService {
     }
 
     // UPDATE
-    public UsuarioSaidaDTO atualizar(Long id, UsuarioCreateDTO dto) {
+    public UsuarioSaidaDTO atualizar(Long id, UsuarioUpdateDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
 
-        // Verifica se o e-mail novo já pertence a outro usuário
         usuarioRepository.findByEmail(dto.getEmail()).ifPresent(existente -> {
             if (!existente.getId().equals(id)) {
                 throw new RuntimeException("E-mail já cadastrado: " + dto.getEmail());
@@ -78,8 +78,13 @@ public class UsuarioService {
 
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
-        usuario.setSenhaHash(hashSenha(dto.getSenha()));
         usuario.setPerfil(dto.getPerfil());
+
+        // Só atualiza a senha se uma nova foi informada
+        String novaSenha = dto.getSenha();
+        if (novaSenha != null && !novaSenha.isBlank()) {
+            usuario.setSenhaHash(hashSenha(novaSenha));
+        }
 
         Usuario atualizado = usuarioRepository.save(usuario);
         return toSaidaDTO(atualizado);
@@ -97,9 +102,11 @@ public class UsuarioService {
 
     private UsuarioSaidaDTO toSaidaDTO(Usuario usuario) {
         return new UsuarioSaidaDTO(
+                usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getPerfil().name()
+                usuario.getPerfil().name(),
+                usuario.getDataCriacao()
         );
     }
 

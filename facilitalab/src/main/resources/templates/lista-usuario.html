@@ -11,20 +11,7 @@
 
 <div class="app">
 
-    <aside class="sidebar">
-        <div class="sidebar-brand">Facilita Lab</div>
-        <nav>
-            <a href="/dashboard" class="nav-item" data-page="dashboard">
-                <span class="nav-icon">⊞</span> Dashboard
-            </a>
-            <a href="/lista" class="nav-item active" data-page="lista">
-                <span class="nav-icon">☰</span> Usuários
-            </a>
-            <a href="/cadastro" class="nav-item" data-page="cadastro">
-                <span class="nav-icon">＋</span> Novo Usuário
-            </a>
-        </nav>
-    </aside>
+    <aside th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></aside>
 
     <main class="content">
         <div class="page-header">
@@ -39,6 +26,8 @@
                     <th>Nome</th>
                     <th>E-mail</th>
                     <th>Perfil</th>
+                    <th>Cadastrado em</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody id="corpo"></tbody>

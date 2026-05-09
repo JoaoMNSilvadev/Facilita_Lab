@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -12,7 +14,9 @@ import lombok.Setter;
 
 public class UsuarioSaidaDTO {
 
+    private Long id;
     private String nome;
     private String email;
     private String perfil;
+    private LocalDateTime dataCriacao;
 }

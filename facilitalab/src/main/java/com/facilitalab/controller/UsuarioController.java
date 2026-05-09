@@ -2,6 +2,7 @@ package com.facilitalab.controller;
 
 import java.util.List;
 
+import com.facilitalab.dtos.UsuarioUpdateDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioSaidaDTO> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid UsuarioCreateDTO dto) {
+            @RequestBody @Valid UsuarioUpdateDTO dto) {
         return ResponseEntity.ok(usuarioService.atualizar(id, dto));
     }
 

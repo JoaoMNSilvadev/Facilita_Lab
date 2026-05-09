@@ -11,23 +11,8 @@
 
 <div class="app">
 
-    <!-- Menu lateral -->
-    <aside class="sidebar">
-        <div class="sidebar-brand">Facilita Lab</div>
-        <nav>
-            <a href="/dashboard" class="nav-item active" data-page="dashboard">
-                <span class="nav-icon">⊞</span> Dashboard
-            </a>
-            <a href="/lista" class="nav-item" data-page="lista">
-                <span class="nav-icon">☰</span> Usuários
-            </a>
-            <a href="/cadastro" class="nav-item" data-page="cadastro">
-                <span class="nav-icon">＋</span> Novo Usuário
-            </a>
-        </nav>
-    </aside>
+    <aside th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></aside>>
 
-    <!-- Conteúdo -->
     <main class="content">
         <div class="page-header">
             <h1>Dashboard</h1>

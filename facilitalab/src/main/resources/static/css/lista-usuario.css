@@ -58,3 +58,54 @@ td:last-child span {
     padding: 2.5rem;
     font-size: .95rem;
 }
+
+/* Botões de ação */
+.acoes {
+    display: flex;
+    gap: .5rem;
+}
+
+.btn-editar,
+.btn-deletar {
+    width: auto;
+    padding: .4rem .9rem;
+    font-size: .8rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: .02em;
+    transition: background .2s, transform .1s, box-shadow .2s;
+    box-shadow: none;
+}
+
+.btn-editar {
+    background: #e8f1f9;
+    color: var(--accent);
+    border: 1.5px solid #c5ddf0;
+}
+
+.btn-editar:hover {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(45,106,159,0.25);
+}
+
+.btn-deletar {
+    background: #fdf0f0;
+    color: #c0392b;
+    border: 1.5px solid #f5c6c6;
+}
+
+.btn-deletar:hover {
+    background: #c0392b;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(192,57,43,0.25);
+}
+
+.btn-editar:active,
+.btn-deletar:active { transform: scale(.97); }
+
+.btn-editar:disabled,
+.btn-deletar:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
