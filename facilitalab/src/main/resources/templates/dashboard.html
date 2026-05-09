@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – Facilita Lab</title>
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+
+<div class="app">
+
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">Facilita Lab</div>
+        <nav>
+            <a href="/dashboard" class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="/lista" class="nav-item" data-page="lista">
+                <span class="nav-icon">☰</span> Usuários
+            </a>
+            <a href="/cadastro" class="nav-item" data-page="cadastro">
+                <span class="nav-icon">＋</span> Novo Usuário
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="content">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <span class="page-sub">Visão geral do sistema</span>
+        </div>
+
+        <div class="cards-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-info">
+                    <span class="stat-label">Usuários Cadastrados</span>
+                    <span class="stat-value" id="totalUsuarios">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script src="/js/dashboard.js"></script>
+
+</body>
+</html>

@@ -3,29 +3,50 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Usuários Cadastrados</title>
+    <title>Usuários – Facilita Lab</title>
+    <link rel="stylesheet" href="/css/layout.css" />
     <link rel="stylesheet" href="/css/lista-usuario.css" />
 </head>
 <body>
-                         <!-- Protótipo feito para testar Banco + Requisições + Funcionalidades !-->
-<div class="container">
-    <div class="header">
-        <h1>Usuários Cadastrados</h1>
-        <a href="/cadastro" class="btn-novo">Novo Usuário</a>
-    </div>
 
-    <table id="tabela">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Perfil</th>
-        </tr>
-        </thead>
-        <tbody id="corpo"></tbody>
-    </table>
+<div class="app">
 
-    <p id="vazio" style="display:none">Nenhum usuário cadastrado.</p>
+    <aside class="sidebar">
+        <div class="sidebar-brand">Facilita Lab</div>
+        <nav>
+            <a href="/dashboard" class="nav-item" data-page="dashboard">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="/lista" class="nav-item active" data-page="lista">
+                <span class="nav-icon">☰</span> Usuários
+            </a>
+            <a href="/cadastro" class="nav-item" data-page="cadastro">
+                <span class="nav-icon">＋</span> Novo Usuário
+            </a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="page-header">
+            <h1>Usuários Cadastrados</h1>
+            <span class="page-sub">Lista de todos os usuários do sistema</span>
+        </div>
+
+        <div class="table-card">
+            <table id="tabela">
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                </tr>
+                </thead>
+                <tbody id="corpo"></tbody>
+            </table>
+            <p id="vazio" style="display:none">Nenhum usuário cadastrado.</p>
+        </div>
+    </main>
+
 </div>
 
 <script src="/js/lista-usuario.js"></script>

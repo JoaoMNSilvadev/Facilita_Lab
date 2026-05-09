@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewController {
 
+    // Primeira tela que abre
     @GetMapping("/")
     public String index() {
-        return "redirect:/cadastro";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/cadastro")
@@ -20,4 +21,7 @@ public class ViewController {
 
     @GetMapping("/lista")
     public String lista() {return "lista-usuario";}
+
+    @GetMapping("/dashboard")
+    public String dashboard() {return "dashboard";}
 }

@@ -3,22 +3,36 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro de Usuário</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <title>Cadastro de Usuário – Facilita Lab</title>
+    <link rel="stylesheet" href="/css/layout.css" />
     <link rel="stylesheet" href="/css/cadastro-usuario.css" />
 </head>
 <body>
-                          <!-- Protótipo feito para testar Banco + Requisições + Funcionalidades !-->
-<div class="wrapper">
-    <div class="card">
-        <div class="card-header">
-            <span class="tag">Facilita Lab</span>
-            <h1>Cadastro de<br>Usuário</h1>
-            <a href="/lista" class="btn-lista">Ver lista →</a>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">Facilita Lab</div>
+        <nav>
+            <a href="/dashboard" class="nav-item" data-page="dashboard">
+                <span class="nav-icon">⊞</span> Dashboard
+            </a>
+            <a href="/lista" class="nav-item" data-page="lista">
+                <span class="nav-icon">☰</span> Usuários
+            </a>
+            <a href="/cadastro" class="nav-item active" data-page="cadastro">
+                <span class="nav-icon">＋</span> Novo Usuário
+            </a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="page-header">
+            <h1>Novo Usuário</h1>
+            <span class="page-sub">Preencha os dados para cadastrar</span>
         </div>
 
-        <div class="card-body">
+        <div class="card">
             <div class="field">
                 <label for="nome">Nome</label>
                 <input type="text" id="nome" placeholder="Nome completo" required/>
@@ -48,7 +62,8 @@
             <button id="btnCadastrar" onclick="cadastrar()">Cadastrar</button>
             <div id="mensagem"></div>
         </div>
-    </div>
+    </main>
+
 </div>
 
 <script src="/js/cadastro-usuario.js"></script>
