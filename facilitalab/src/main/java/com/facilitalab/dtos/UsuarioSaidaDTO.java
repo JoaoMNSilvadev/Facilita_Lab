@@ -1,0 +1,18 @@
+package com.facilitalab.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+
+public class UsuarioSaidaDTO {
+
+    private String nome;
+    private String email;
+    private String perfil;
+}

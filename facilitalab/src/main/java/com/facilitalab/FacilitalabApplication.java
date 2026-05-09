@@ -3,8 +3,6 @@ package com.facilitalab;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.facilitalab.models.Usuario;
-
 @SpringBootApplication
 public class FacilitalabApplication {
 
