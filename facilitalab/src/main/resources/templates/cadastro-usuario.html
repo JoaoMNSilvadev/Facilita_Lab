@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de Usuário</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/cadastro-usuario.css" />
+</head>
+<body>
+                          <!-- Protótipo feito para testar Banco + Requisições + Funcionalidades !-->
+<div class="wrapper">
+    <div class="card">
+        <div class="card-header">
+            <span class="tag">Facilita Lab</span>
+            <h1>Cadastro de<br>Usuário</h1>
+            <a href="/lista" class="btn-lista">Ver lista →</a>
+        </div>
+
+        <div class="card-body">
+            <div class="field">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" placeholder="Nome completo" required/>
+            </div>
+
+            <div class="field">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="usuario@email.com" required/>
+            </div>
+
+            <div class="field">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required/>
+            </div>
+
+            <div class="field">
+                <label for="perfil">Perfil</label>
+                <select id="perfil">
+                    <option value="">Selecione...</option>
+                    <option value="DENTISTA">Dentista</option>
+                    <option value="RECEPCAO">Recepção</option>
+                    <option value="CADISTA">Cadista</option>
+                    <option value="GESTOR">Gestor</option>
+                </select>
+            </div>
+
+            <button id="btnCadastrar" onclick="cadastrar()">Cadastrar</button>
+            <div id="mensagem"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/cadastro-usuario.js"></script>
+
+</body>
+</html>

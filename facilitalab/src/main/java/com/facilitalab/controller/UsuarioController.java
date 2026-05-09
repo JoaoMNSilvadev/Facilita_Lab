@@ -1,0 +1,89 @@
+package com.facilitalab.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.facilitalab.dtos.UsuarioCreateDTO;
+import com.facilitalab.dtos.UsuarioSaidaDTO;
+import com.facilitalab.models.PerfilEnum;
+import com.facilitalab.service.UsuarioService;
+
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import java.util.Map;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/usuarios")
+@RequiredArgsConstructor
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    // POST /usuarios
+    @PostMapping
+    public ResponseEntity<UsuarioSaidaDTO> criar(@RequestBody @Valid UsuarioCreateDTO dto) {
+        UsuarioSaidaDTO criado = usuarioService.criar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+    }
+
+    // GET /usuarios
+    @GetMapping
+    public ResponseEntity<List<UsuarioSaidaDTO>> listarTodos() {
+        return ResponseEntity.ok(usuarioService.listarTodos());
+    }
+
+    // GET /usuarios/{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioSaidaDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    }
+
+    // GET /usuarios/perfil/{perfil}
+    @GetMapping("/perfil/{perfil}")
+    public ResponseEntity<List<UsuarioSaidaDTO>> listarPorPerfil(@PathVariable PerfilEnum perfil) {
+        return ResponseEntity.ok(usuarioService.listarPorPerfil(perfil));
+    }
+
+    // GET /usuarios/email/{email}
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioSaidaDTO> buscarPorEmail(@PathVariable String email) {
+        return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
+    }
+
+    // PUT /usuarios/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioSaidaDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid UsuarioCreateDTO dto) {
+        return ResponseEntity.ok(usuarioService.atualizar(id, dto));
+    }
+
+    // DELETE /usuarios/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        usuarioService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, List<String>>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("errors", List.of(ex.getMessage())));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<String>>> handleValidation(MethodArgumentNotValidException ex) {
+        List<String> erros = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", erros));
+    }
+}
