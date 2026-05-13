@@ -109,3 +109,70 @@ td:last-child span {
 
 .btn-editar:disabled,
 .btn-deletar:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
+
+/* ── Filtros ─────────────────────────────────────────────────────────────── */
+
+.filtros {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.filtro-btn {
+    width: auto;
+    padding: .45rem 1.1rem;
+    font-size: .82rem;
+    font-weight: 600;
+    font-family: inherit;
+    border: 1.5px solid var(--border);
+    border-radius: 99px;
+    background: #ffffff;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: .03em;
+    transition: background .2s, color .2s, border-color .2s, box-shadow .2s;
+    box-shadow: none;
+}
+
+.filtro-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #f0f6ff;
+}
+
+.filtro-btn.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+    box-shadow: 0 4px 10px rgba(45,106,159,0.25);
+}
+
+.filtro-btn:active { transform: scale(.97); }
+
+.page-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.btn-novo {
+    white-space: nowrap;
+    padding: .6rem 1.2rem;
+    background: var(--accent);
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: .88rem;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    letter-spacing: .02em;
+    transition: background .2s, box-shadow .2s;
+    box-shadow: 0 4px 14px rgba(45,106,159,0.3);
+}
+
+.btn-novo:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 6px 18px rgba(45,106,159,0.35);
+}

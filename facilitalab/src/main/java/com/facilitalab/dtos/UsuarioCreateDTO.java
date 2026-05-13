@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -34,5 +36,17 @@ public class UsuarioCreateDTO {
     @NotNull(message = "O perfil é obrigatório")
     private PerfilEnum perfil;
 
+    @NotBlank(message = "O CPF é obrigatório")
+    @Size(min = 11, max = 14, message = "CPF inválido")
+    private String cpf;
+
+    @NotBlank(message = "O telefone é obrigatório")
+    @Size(max = 20, message = "Telefone inválido")
+    private String telefone;
+
+    // Opcionais no DTO — a obrigatoriedade é validada no Service
+    private BigDecimal salario;
+    private String cep;
+    private String cro;
     
 }

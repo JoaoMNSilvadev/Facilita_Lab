@@ -25,14 +25,34 @@ public class UsuarioService {
             throw new IllegalArgumentException("E-mail já cadastrado: " + dto.getEmail());
         }
 
+        boolean isFuncionario = List.of(PerfilEnum.GESTOR, PerfilEnum.RECEPCAO, PerfilEnum.CADISTA)
+                .contains(dto.getPerfil());
+        boolean isDentista = dto.getPerfil() == PerfilEnum.DENTISTA;
+
+        if (isFuncionario) {
+            if (dto.getSalario() == null)
+                throw new IllegalArgumentException("Salário é obrigatório para funcionários.");
+            if (dto.getCep() == null || dto.getCep().isBlank())
+                throw new IllegalArgumentException("CEP é obrigatório para funcionários.");
+        }
+
+        if (isDentista) {
+            if (dto.getCro() == null || dto.getCro().isBlank())
+                throw new IllegalArgumentException("CRO é obrigatório para dentistas.");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenhaHash(hashSenha(dto.getSenha()));
         usuario.setPerfil(dto.getPerfil());
+        usuario.setCpf(dto.getCpf());
+        usuario.setTelefone(dto.getTelefone());
+        usuario.setSalario(dto.getSalario());
+        usuario.setCep(dto.getCep());
+        usuario.setCro(dto.getCro());
 
-        Usuario salvo = usuarioRepository.save(usuario);
-        return toSaidaDTO(salvo);
+        return toSaidaDTO(usuarioRepository.save(usuario));
     }
 
     // READ - todos
@@ -76,18 +96,36 @@ public class UsuarioService {
             }
         });
 
+        boolean isFuncionario = List.of(PerfilEnum.GESTOR, PerfilEnum.RECEPCAO, PerfilEnum.CADISTA)
+                .contains(dto.getPerfil());
+        boolean isDentista = dto.getPerfil() == PerfilEnum.DENTISTA;
+
+        if (isFuncionario) {
+            if (dto.getSalario() == null)
+                throw new IllegalArgumentException("Salário é obrigatório para funcionários.");
+            if (dto.getCep() == null || dto.getCep().isBlank())
+                throw new IllegalArgumentException("CEP é obrigatório para funcionários.");
+        }
+
+        if (isDentista) {
+            if (dto.getCro() == null || dto.getCro().isBlank())
+                throw new IllegalArgumentException("CRO é obrigatório para dentistas.");
+        }
+
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setPerfil(dto.getPerfil());
+        usuario.setCpf(dto.getCpf());
+        usuario.setTelefone(dto.getTelefone());
+        usuario.setSalario(isFuncionario ? dto.getSalario() : null);
+        usuario.setCep(isFuncionario ? dto.getCep() : null);
+        usuario.setCro(isDentista ? dto.getCro() : null);
 
-        // Só atualiza a senha se uma nova foi informada
-        String novaSenha = dto.getSenha();
-        if (novaSenha != null && !novaSenha.isBlank()) {
-            usuario.setSenhaHash(hashSenha(novaSenha));
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            usuario.setSenhaHash(hashSenha(dto.getSenha()));
         }
 
-        Usuario atualizado = usuarioRepository.save(usuario);
-        return toSaidaDTO(atualizado);
+        return toSaidaDTO(usuarioRepository.save(usuario));
     }
 
     // DELETE
@@ -106,7 +144,12 @@ public class UsuarioService {
                 usuario.getNome(),
                 usuario.getEmail(),
                 usuario.getPerfil().name(),
-                usuario.getDataCriacao()
+                usuario.getDataCriacao(),
+                usuario.getCpf(),
+                usuario.getTelefone(),
+                usuario.getSalario(),
+                usuario.getCep(),
+                usuario.getCro()
         );
     }
 

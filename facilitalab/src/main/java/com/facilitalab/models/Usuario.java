@@ -1,5 +1,6 @@
 package com.facilitalab.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -43,5 +44,22 @@ public class Usuario {
     public void prepersist() {
         this.dataCriacao = LocalDateTime.now();
     }
+
+    @Column(name = "cpf", nullable = false, length = 14, unique = true)
+    private String cpf;
+
+    @Column(name = "telefone", nullable = false, length = 20)
+    private String telefone;
+
+    // Só funcionários (GESTOR, RECEPCAO, CADISTA)
+    @Column(name = "salario")
+    private BigDecimal salario;
+
+    @Column(name = "cep", length = 9)
+    private String cep;
+
+    // Só DENTISTA
+    @Column(name = "cro", length = 20)
+    private String cro;
     
 }

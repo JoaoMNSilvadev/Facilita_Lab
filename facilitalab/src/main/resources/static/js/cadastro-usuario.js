@@ -1,15 +1,47 @@
+const FUNCIONARIOS = ['GESTOR', 'RECEPCAO', 'CADISTA'];
+
+function atualizarCampos() {
+    const perfil = document.getElementById('perfil').value;
+
+    const camposFuncionario = document.getElementById('campos-funcionario');
+    const campoCro          = document.getElementById('campo-cro');
+
+    if (FUNCIONARIOS.includes(perfil)) {
+        camposFuncionario.style.display = 'flex';
+        campoCro.style.display = 'none';
+        // Limpa CRO ao trocar de tipo
+        document.getElementById('cro').value = '';
+    } else if (perfil === 'DENTISTA') {
+        camposFuncionario.style.display = 'none';
+        campoCro.style.display = 'block';
+        // Limpa campos de funcionário ao trocar de tipo
+        document.getElementById('salario').value = '';
+        document.getElementById('cep').value = '';
+    } else {
+        camposFuncionario.style.display = 'none';
+        campoCro.style.display = 'none';
+    }
+}
+
 async function cadastrar() {
-    const btn = document.getElementById('btnCadastrar');
-    const msg = document.getElementById('mensagem');
+    const btn  = document.getElementById('btnCadastrar');
+    const msg  = document.getElementById('mensagem');
+    const perfil = document.getElementById('perfil').value;
 
     const body = {
-        nome:   document.getElementById('nome').value.trim(),
-        email:  document.getElementById('email').value.trim(),
-        senha:  document.getElementById('senha').value,
-        perfil: document.getElementById('perfil').value
+        nome:     document.getElementById('nome').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        senha:    document.getElementById('senha').value,
+        perfil,
+        cpf:      document.getElementById('cpf').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        // Campos condicionais — null se não aplicável
+        salario:  FUNCIONARIOS.includes(perfil) ? (document.getElementById('salario').value || null) : null,
+        cep:      FUNCIONARIOS.includes(perfil) ? (document.getElementById('cep').value.trim() || null) : null,
+        cro:      perfil === 'DENTISTA'          ? (document.getElementById('cro').value.trim() || null) : null,
     };
 
-    // Validação campo a campo
+    // --- Validação no front ---
     const erros = [];
 
     if (!body.nome) {
@@ -36,11 +68,31 @@ async function cadastrar() {
         erros.push('O perfil é obrigatório.');
     }
 
+    if (!body.cpf) {
+        erros.push('O CPF é obrigatório.');
+    } else if (body.cpf.replace(/\D/g, '').length !== 11) {
+        erros.push('CPF inválido.');
+    }
+
+    if (!body.telefone) {
+        erros.push('O telefone é obrigatório.');
+    }
+
+    if (FUNCIONARIOS.includes(perfil)) {
+        if (!body.salario) erros.push('O salário é obrigatório para funcionários.');
+        if (!body.cep)     erros.push('O CEP é obrigatório para funcionários.');
+    }
+
+    if (perfil === 'DENTISTA' && !body.cro) {
+        erros.push('O CRO é obrigatório para dentistas.');
+    }
+
     if (erros.length > 0) {
         mostrar(msg, erros.join('\n'), 'erro');
         return;
     }
 
+    // --- Envio ---
     btn.disabled = true;
     btn.textContent = 'Enviando...';
     msg.className = '';
@@ -58,19 +110,14 @@ async function cadastrar() {
         } else if (res.status === 400) {
             try {
                 const errosBackend = await res.json();
-                if (errosBackend.errors) {
-                    mostrar(msg, errosBackend.errors.join('\n'), 'erro');
-                } else {
-                    mostrar(msg, JSON.stringify(errosBackend), 'erro');
-                }
+                mostrar(msg, errosBackend.errors?.join('\n') ?? JSON.stringify(errosBackend), 'erro');
             } catch {
                 mostrar(msg, 'Erro de validação.', 'erro');
             }
         } else {
-            const err = await res.text();
-            mostrar(msg, `Erro ${res.status}: ${err}`, 'erro');
+            mostrar(msg, `Erro ${res.status}: ${await res.text()}`, 'erro');
         }
-    } catch (e) {
+    } catch {
         mostrar(msg, 'Não foi possível conectar ao servidor.', 'erro');
     } finally {
         btn.disabled = false;
@@ -79,12 +126,6 @@ async function cadastrar() {
 }
 
 function mostrar(el, texto, tipo) {
-    el.textContent = texto;
+    el.innerHTML = texto.split('\n').map(l => `<p>${l}</p>`).join('');
     el.className = tipo;
-    el.style.display = 'block';
-}
-
-function limparForm() {
-    ['nome', 'email', 'senha'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('perfil').value = '';
 }
