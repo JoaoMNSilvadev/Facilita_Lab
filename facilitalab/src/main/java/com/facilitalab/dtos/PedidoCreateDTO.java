@@ -42,7 +42,6 @@ private LocalDate prazoEntrega;
 @NotNull(message = "O ID do dentista é obrigatório")
 private Long dentistaId;
 
-@NotNull(message = "O ID do cadista é obrigatório")
 private Long cadistaId;
 
 }
