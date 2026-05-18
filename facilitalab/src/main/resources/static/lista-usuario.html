@@ -11,7 +11,8 @@
 
 <div class="app">
 
-    <aside th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></aside>
+    <!-- Substituiu: <aside th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></aside> -->
+    <div id="sidebar-container"></div>
 
     <main class="content">
         <div class="page-header">
@@ -20,7 +21,7 @@
                     <h1>Usuários Cadastrados</h1>
                     <span class="page-sub">Lista de todos os usuários do sistema</span>
                 </div>
-                <a href="/cadastro" class="btn-novo">+ Cadastrar novo usuário</a>
+                <a href="/cadastro" class="btn-primary btn-novo">+ Cadastrar novo usuário</a>
             </div>
         </div>
 
@@ -51,6 +52,8 @@
 
 </div>
 
+<!-- sidebar.js carrega o HTML da sidebar e define o item ativo via pathname -->
+<script src="/js/sidebar.js"></script>
 <script src="/js/lista-usuario.js"></script>
 </body>
 </html>

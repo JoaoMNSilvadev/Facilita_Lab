@@ -4,13 +4,12 @@ import com.facilitalab.models.PerfilEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,15 +34,13 @@ public class UsuarioUpdateDTO {
     private PerfilEnum perfil;
 
     @NotBlank(message = "O CPF é obrigatório")
-    @Size(min = 11, max = 14, message = "CPF inválido")
+    @Pattern(regexp = "^(\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})$", message = "CPF inválido")
     private String cpf;
 
     @NotBlank(message = "O telefone é obrigatório")
-    @Size(max = 20, message = "Telefone inválido")
+    @Pattern(regexp = "^[\\d\\s()\\-+]{8,20}$", message = "Telefone inválido")
     private String telefone;
 
-    // Opcionais no DTO — obrigatoriedade validada no Service
-    private BigDecimal salario;
-    private String cep;
+    @Size(max = 20, message = "CRO deve ter no máximo 20 caracteres")
     private String cro;
 }

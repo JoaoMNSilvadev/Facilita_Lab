@@ -72,12 +72,14 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    // Regra de negócio violada (e-mail/CPF duplicado, CRO ausente para dentista)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, List<String>>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("errors", List.of(ex.getMessage())));
     }
 
+    // Falha de validação Bean Validation (@NotBlank, @Size, @Pattern, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidation(MethodArgumentNotValidException ex) {
         List<String> erros = ex.getBindingResult()
@@ -86,5 +88,12 @@ public class UsuarioController {
                 .map(FieldError::getDefaultMessage)
                 .toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", erros));
+    }
+
+    // Recurso não encontrado (busca por ID, e-mail ou CPF inexistente)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, List<String>>> handleNotFound(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("errors", List.of(ex.getMessage())));
     }
 }

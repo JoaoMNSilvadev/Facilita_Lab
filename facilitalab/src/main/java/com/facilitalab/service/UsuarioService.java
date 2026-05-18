@@ -3,6 +3,7 @@ package com.facilitalab.service;
 import java.util.List;
 
 import com.facilitalab.dtos.UsuarioUpdateDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.facilitalab.dtos.UsuarioCreateDTO;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    // BCryptPasswordEncoder registrado em SecurityConfig
+    private final PasswordEncoder passwordEncoder;
 
     // CREATE
     public UsuarioSaidaDTO criar(UsuarioCreateDTO dto) {
@@ -25,17 +28,15 @@ public class UsuarioService {
             throw new IllegalArgumentException("E-mail já cadastrado: " + dto.getEmail());
         }
 
-        boolean isFuncionario = List.of(PerfilEnum.GESTOR, PerfilEnum.RECEPCAO, PerfilEnum.CADISTA)
-                .contains(dto.getPerfil());
-        boolean isDentista = dto.getPerfil() == PerfilEnum.DENTISTA;
-
-        if (isFuncionario) {
-            if (dto.getSalario() == null)
-                throw new IllegalArgumentException("Salário é obrigatório para funcionários.");
-            if (dto.getCep() == null || dto.getCep().isBlank())
-                throw new IllegalArgumentException("CEP é obrigatório para funcionários.");
+        // Normaliza antes da busca para que "123.456.789-01" e "12345678901" sejam o mesmo CPF
+        String cpf = normalizarCpf(dto.getCpf());
+        if (usuarioRepository.existsByCpf(cpf)) {
+            throw new IllegalArgumentException("CPF já cadastrado: " + dto.getCpf());
         }
 
+        boolean isDentista = dto.getPerfil() == PerfilEnum.DENTISTA;
+
+        // CRO é obrigatório apenas para dentistas; demais perfis devem ter null
         if (isDentista) {
             if (dto.getCro() == null || dto.getCro().isBlank())
                 throw new IllegalArgumentException("CRO é obrigatório para dentistas.");
@@ -44,13 +45,11 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
-        usuario.setSenhaHash(hashSenha(dto.getSenha()));
+        usuario.setSenhaHash(passwordEncoder.encode(dto.getSenha()));
         usuario.setPerfil(dto.getPerfil());
-        usuario.setCpf(dto.getCpf());
+        usuario.setCpf(cpf);
         usuario.setTelefone(dto.getTelefone());
-        usuario.setSalario(dto.getSalario());
-        usuario.setCep(dto.getCep());
-        usuario.setCro(dto.getCro());
+        usuario.setCro(isDentista ? dto.getCro() : null);
 
         return toSaidaDTO(usuarioRepository.save(usuario));
     }
@@ -90,23 +89,26 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
 
+        // Verifica unicidade de e-mail excluindo o próprio usuário
         usuarioRepository.findByEmail(dto.getEmail()).ifPresent(existente -> {
             if (!existente.getId().equals(id)) {
-                throw new RuntimeException("E-mail já cadastrado: " + dto.getEmail());
+                throw new IllegalArgumentException("E-mail já cadastrado: " + dto.getEmail());
             }
         });
 
-        boolean isFuncionario = List.of(PerfilEnum.GESTOR, PerfilEnum.RECEPCAO, PerfilEnum.CADISTA)
-                .contains(dto.getPerfil());
+        // Normaliza antes da busca — mesma razão do criar()
+        String cpf = normalizarCpf(dto.getCpf());
+
+        // Verifica unicidade de CPF excluindo o próprio usuário
+        usuarioRepository.findByCpf(cpf).ifPresent(existente -> {
+            if (!existente.getId().equals(id)) {
+                throw new IllegalArgumentException("CPF já cadastrado: " + dto.getCpf());
+            }
+        });
+
         boolean isDentista = dto.getPerfil() == PerfilEnum.DENTISTA;
 
-        if (isFuncionario) {
-            if (dto.getSalario() == null)
-                throw new IllegalArgumentException("Salário é obrigatório para funcionários.");
-            if (dto.getCep() == null || dto.getCep().isBlank())
-                throw new IllegalArgumentException("CEP é obrigatório para funcionários.");
-        }
-
+        // CRO é obrigatório apenas para dentistas; demais perfis devem ter null
         if (isDentista) {
             if (dto.getCro() == null || dto.getCro().isBlank())
                 throw new IllegalArgumentException("CRO é obrigatório para dentistas.");
@@ -115,14 +117,13 @@ public class UsuarioService {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setPerfil(dto.getPerfil());
-        usuario.setCpf(dto.getCpf());
+        usuario.setCpf(cpf);
         usuario.setTelefone(dto.getTelefone());
-        usuario.setSalario(isFuncionario ? dto.getSalario() : null);
-        usuario.setCep(isFuncionario ? dto.getCep() : null);
         usuario.setCro(isDentista ? dto.getCro() : null);
 
+        // Senha é opcional no update — null ou vazio mantém a senha atual
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
-            usuario.setSenhaHash(hashSenha(dto.getSenha()));
+            usuario.setSenhaHash(passwordEncoder.encode(dto.getSenha()));
         }
 
         return toSaidaDTO(usuarioRepository.save(usuario));
@@ -136,7 +137,10 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    // --- helpers ---
+    // Remove pontos e traço para garantir que "123.456.789-01" e "12345678901" sejam tratados como o mesmo CPF
+    private String normalizarCpf(String cpf) {
+        return cpf.replaceAll("\\D", "");
+    }
 
     private UsuarioSaidaDTO toSaidaDTO(Usuario usuario) {
         return new UsuarioSaidaDTO(
@@ -147,14 +151,7 @@ public class UsuarioService {
                 usuario.getDataCriacao(),
                 usuario.getCpf(),
                 usuario.getTelefone(),
-                usuario.getSalario(),
-                usuario.getCep(),
                 usuario.getCro()
         );
-    }
-
-    // Substituir por BCryptPasswordEncoder quando integrar Spring Security
-    private String hashSenha(String senha) {
-        return senha; // TODO: bcrypt
     }
 }

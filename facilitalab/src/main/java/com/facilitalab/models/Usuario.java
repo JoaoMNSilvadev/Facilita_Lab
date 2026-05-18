@@ -1,6 +1,5 @@
 package com.facilitalab.models;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -27,17 +26,19 @@ public class Usuario {
     @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
-    @Column(name = "email", unique = true, length = 250)
+    @Column(name = "email", nullable = false, unique = true, length = 250)
     private String email;
 
     @Column(name = "senha_hash", nullable = false)
     private String senhaHash;
 
-    @Column(name = "perfil")
+    // length = 20 comporta todos os valores atuais e futuros de PerfilEnum (maior: "RECEPCAO" = 8 chars)
+    @Column(name = "perfil", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private PerfilEnum perfil;
 
-    @Column(name = "data_criacao")
+    // nullable = false reflete o @PrePersist que sempre preenche antes do primeiro INSERT
+    @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
     @PrePersist
@@ -45,18 +46,12 @@ public class Usuario {
         this.dataCriacao = LocalDateTime.now();
     }
 
-    @Column(name = "cpf", nullable = false, length = 14, unique = true)
+    // CPF armazenado somente com dígitos (11 chars); normalização feita no service
+    @Column(name = "cpf", nullable = false, length = 11, unique = true)
     private String cpf;
 
     @Column(name = "telefone", nullable = false, length = 20)
     private String telefone;
-
-    // Só funcionários (GESTOR, RECEPCAO, CADISTA)
-    @Column(name = "salario")
-    private BigDecimal salario;
-
-    @Column(name = "cep", length = 9)
-    private String cep;
 
     // Só DENTISTA
     @Column(name = "cro", length = 20)

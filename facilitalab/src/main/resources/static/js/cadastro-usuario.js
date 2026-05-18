@@ -1,25 +1,12 @@
-const FUNCIONARIOS = ['GESTOR', 'RECEPCAO', 'CADISTA'];
-
 function atualizarCampos() {
-    const perfil = document.getElementById('perfil').value;
+    const perfil   = document.getElementById('perfil').value;
+    const campoCro = document.getElementById('campo-cro');
 
-    const camposFuncionario = document.getElementById('campos-funcionario');
-    const campoCro          = document.getElementById('campo-cro');
-
-    if (FUNCIONARIOS.includes(perfil)) {
-        camposFuncionario.style.display = 'flex';
-        campoCro.style.display = 'none';
-        // Limpa CRO ao trocar de tipo
-        document.getElementById('cro').value = '';
-    } else if (perfil === 'DENTISTA') {
-        camposFuncionario.style.display = 'none';
+    if (perfil === 'DENTISTA') {
         campoCro.style.display = 'block';
-        // Limpa campos de funcionário ao trocar de tipo
-        document.getElementById('salario').value = '';
-        document.getElementById('cep').value = '';
     } else {
-        camposFuncionario.style.display = 'none';
         campoCro.style.display = 'none';
+        document.getElementById('cro').value = '';
     }
 }
 
@@ -35,10 +22,7 @@ async function cadastrar() {
         perfil,
         cpf:      document.getElementById('cpf').value.trim(),
         telefone: document.getElementById('telefone').value.trim(),
-        // Campos condicionais — null se não aplicável
-        salario:  FUNCIONARIOS.includes(perfil) ? (document.getElementById('salario').value || null) : null,
-        cep:      FUNCIONARIOS.includes(perfil) ? (document.getElementById('cep').value.trim() || null) : null,
-        cro:      perfil === 'DENTISTA'          ? (document.getElementById('cro').value.trim() || null) : null,
+        cro:      perfil === 'DENTISTA' ? (document.getElementById('cro').value.trim() || null) : null,
     };
 
     // --- Validação no front ---
@@ -70,17 +54,14 @@ async function cadastrar() {
 
     if (!body.cpf) {
         erros.push('O CPF é obrigatório.');
-    } else if (body.cpf.replace(/\D/g, '').length !== 11) {
+    } else if (!/^(\d{11}|\d{3}\.\d{3}\.\d{3}-\d{2})$/.test(body.cpf)) {
         erros.push('CPF inválido.');
     }
 
     if (!body.telefone) {
         erros.push('O telefone é obrigatório.');
-    }
-
-    if (FUNCIONARIOS.includes(perfil)) {
-        if (!body.salario) erros.push('O salário é obrigatório para funcionários.');
-        if (!body.cep)     erros.push('O CEP é obrigatório para funcionários.');
+    } else if (!/^[\d\s()\-+]{8,20}$/.test(body.telefone)) {
+        erros.push('Telefone inválido. Use apenas números, espaços, parênteses ou hífen.');
     }
 
     if (perfil === 'DENTISTA' && !body.cro) {
@@ -88,7 +69,7 @@ async function cadastrar() {
     }
 
     if (erros.length > 0) {
-        mostrar(msg, erros.join('\n'), 'erro');
+        mostrar(msg, erros, 'erro');
         return;
     }
 
@@ -110,12 +91,12 @@ async function cadastrar() {
         } else if (res.status === 400) {
             try {
                 const errosBackend = await res.json();
-                mostrar(msg, errosBackend.errors?.join('\n') ?? JSON.stringify(errosBackend), 'erro');
+                mostrar(msg, errosBackend.errors ?? ['Erro de validação.'], 'erro');
             } catch {
-                mostrar(msg, 'Erro de validação.', 'erro');
+                mostrar(msg, ['Erro de validação.'], 'erro');
             }
         } else {
-            mostrar(msg, `Erro ${res.status}: ${await res.text()}`, 'erro');
+            mostrar(msg, [`Erro ${res.status}: ${await res.text()}`], 'erro');
         }
     } catch {
         mostrar(msg, 'Não foi possível conectar ao servidor.', 'erro');
@@ -125,7 +106,10 @@ async function cadastrar() {
     }
 }
 
-function mostrar(el, texto, tipo) {
-    el.innerHTML = texto.split('\n').map(l => `<p>${l}</p>`).join('');
+function mostrar(el, textos, tipo) {
+    el.innerHTML = Array.isArray(textos)
+        ? textos.map(t => `<p>${t}</p>`).join('')
+        : `<p>${textos}</p>`;
     el.className = tipo;
+    el.style.display = 'block';
 }

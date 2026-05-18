@@ -1,24 +1,14 @@
-const FUNCIONARIOS = ['GESTOR', 'RECEPCAO', 'CADISTA'];
 const id = window.location.pathname.split('/').pop();
 
 function atualizarCampos() {
-    const perfil = document.getElementById('perfil').value;
+    const perfil   = document.getElementById('perfil').value;
+    const campoCro = document.getElementById('campo-cro');
 
-    const camposFuncionario = document.getElementById('campos-funcionario');
-    const campoCro          = document.getElementById('campo-cro');
-
-    if (FUNCIONARIOS.includes(perfil)) {
-        camposFuncionario.style.display = 'flex';
+    if (perfil === 'DENTISTA') {
+        campoCro.style.display = 'block';
+    } else {
         campoCro.style.display = 'none';
         document.getElementById('cro').value = '';
-    } else if (perfil === 'DENTISTA') {
-        camposFuncionario.style.display = 'none';
-        campoCro.style.display = 'block';
-        document.getElementById('salario').value = '';
-        document.getElementById('cep').value = '';
-    } else {
-        camposFuncionario.style.display = 'none';
-        campoCro.style.display = 'none';
     }
 }
 
@@ -31,16 +21,13 @@ async function carregarUsuario() {
         document.getElementById('nome').value     = u.nome;
         document.getElementById('email').value    = u.email;
         document.getElementById('perfil').value   = u.perfil;
-        document.getElementById('cpf').value      = u.cpf      ?? '';
-        document.getElementById('telefone').value = u.telefone ?? '';
+        // CPF e telefone vêm com somente dígitos do banco; formata para exibição
+        document.getElementById('cpf').value      = formatarCpf(u.cpf);
+        document.getElementById('telefone').value = formatarTelefone(u.telefone);
 
-        // Dispara a exibição dos campos condicionais antes de preencher
         atualizarCampos();
 
-        if (FUNCIONARIOS.includes(u.perfil)) {
-            document.getElementById('salario').value = u.salario ?? '';
-            document.getElementById('cep').value     = u.cep     ?? '';
-        } else if (u.perfil === 'DENTISTA') {
+        if (u.perfil === 'DENTISTA') {
             document.getElementById('cro').value = u.cro ?? '';
         }
 
@@ -62,9 +49,7 @@ async function salvar() {
         perfil,
         cpf:      document.getElementById('cpf').value.trim(),
         telefone: document.getElementById('telefone').value.trim(),
-        salario:  FUNCIONARIOS.includes(perfil) ? (document.getElementById('salario').value || null) : null,
-        cep:      FUNCIONARIOS.includes(perfil) ? (document.getElementById('cep').value.trim() || null) : null,
-        cro:      perfil === 'DENTISTA'          ? (document.getElementById('cro').value.trim() || null) : null,
+        cro:      perfil === 'DENTISTA' ? (document.getElementById('cro').value.trim() || null) : null,
     };
 
     if (senha) body.senha = senha;
@@ -82,6 +67,8 @@ async function salvar() {
         erros.push('O e-mail é obrigatório.');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
         erros.push('E-mail inválido.');
+    } else if (body.email.length > 250) {
+        erros.push('O e-mail deve ter no máximo 250 caracteres.');
     }
 
     if (!body.perfil) {
@@ -90,17 +77,14 @@ async function salvar() {
 
     if (!body.cpf) {
         erros.push('O CPF é obrigatório.');
-    } else if (body.cpf.replace(/\D/g, '').length !== 11) {
+    } else if (!/^(\d{11}|\d{3}\.\d{3}\.\d{3}-\d{2})$/.test(body.cpf)) {
         erros.push('CPF inválido.');
     }
 
     if (!body.telefone) {
         erros.push('O telefone é obrigatório.');
-    }
-
-    if (FUNCIONARIOS.includes(perfil)) {
-        if (!body.salario) erros.push('O salário é obrigatório para funcionários.');
-        if (!body.cep)     erros.push('O CEP é obrigatório para funcionários.');
+    } else if (!/^[\d\s()\-+]{8,20}$/.test(body.telefone)) {
+        erros.push('Telefone inválido. Use apenas números, espaços, parênteses ou hífen.');
     }
 
     if (perfil === 'DENTISTA' && !body.cro) {
@@ -108,8 +92,8 @@ async function salvar() {
     }
 
     if (senha || confirmarSenha) {
-        if (senha.length < 6)         erros.push('A senha deve ter no mínimo 6 caracteres.');
-        if (senha !== confirmarSenha) erros.push('As senhas não coincidem.');
+        if (senha.length < 6 || senha.length > 100) erros.push('A senha deve ter entre 6 e 100 caracteres.');
+        if (senha !== confirmarSenha)               erros.push('As senhas não coincidem.');
     }
 
     if (erros.length > 0) {

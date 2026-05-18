@@ -1,12 +1,17 @@
-/* O body e o layout geral vêm do layout.css */
+/* Estilos base (variáveis, sidebar, layout, .btn-primary, #mensagem) vêm de layout.css */
+
+/* Aproxima o cabeçalho do formulário — lei da proximidade (Gestalt) */
+.page-header {
+    margin-bottom: .65rem;
+}
 
 .card {
-    background: #ffffff;
+    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 2rem;
     max-width: 480px;
-    box-shadow: 0 4px 6px rgba(26,58,92,0.06), 0 20px 40px rgba(26,58,92,0.08);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
@@ -27,7 +32,7 @@ label {
 }
 
 input, select {
-    background: #f7fafd;
+    background: var(--input-bg);
     border: 1.5px solid var(--border);
     border-radius: 10px;
     padding: .72rem 1rem;
@@ -43,7 +48,7 @@ input::placeholder { color: #b0bec8; }
 
 input:focus, select:focus {
     border-color: var(--accent);
-    background: #fff;
+    background: var(--card-bg);
     box-shadow: 0 0 0 4px rgba(45,106,159,0.12);
 }
 
@@ -57,46 +62,8 @@ select {
     padding-right: 2.5rem;
 }
 
+/* Sobrescreve só o que é específico do botão de formulário; restante vem de .btn-primary */
 button {
     width: 100%;
     padding: .85rem;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: .98rem;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    letter-spacing: .02em;
-    transition: background .2s, transform .1s, box-shadow .2s;
-    box-shadow: 0 4px 14px rgba(45,106,159,0.3);
-}
-
-button:hover { background: var(--accent-hover); box-shadow: 0 6px 18px rgba(45,106,159,0.35); }
-button:active { transform: scale(.98); }
-button:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
-
-#mensagem {
-    font-size: .88rem;
-    border-radius: 10px;
-    padding: .75rem 1rem;
-    display: none;
-    font-weight: 500;
-}
-
-#mensagem p { margin: .2rem 0; }
-
-#mensagem.sucesso {
-    display: block;
-    background: #f0f9f4;
-    color: #1e7e4a;
-    border: 1.5px solid #b7e4ca;
-}
-
-#mensagem.erro {
-    display: block;
-    background: #fdf0f0;
-    color: #c0392b;
-    border: 1.5px solid #f5c6c6;
 }

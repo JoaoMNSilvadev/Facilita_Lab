@@ -1,17 +1,40 @@
 :root {
+    /* Estrutura */
     --bg: #f0f4f8;
+    --card-bg: #ffffff;
+    --input-bg: #f7fafd;
+    --border: #dce6f0;
+    --text: #1e2d3d;
+    --muted: #6b7f94;
+
+    /* Cor de destaque principal */
+    --accent: #2d6a9f;
+    --accent-hover: #1a3a5c;
+    --accent-bg: #e8f1f9;
+    --accent-border: #c5ddf0;
+
+    /* Sidebar */
     --sidebar-bg: #1a3a5c;
     --sidebar-hover: #2d6a9f;
     --sidebar-active: #2d6a9f;
     --sidebar-active-border: #a8d4f5;
     --sidebar-text: #c8dff0;
     --sidebar-brand: #ffffff;
-    --accent: #2d6a9f;
-    --accent-hover: #1a3a5c;
-    --text: #1e2d3d;
-    --muted: #6b7f94;
-    --border: #dce6f0;
-    --card-bg: #ffffff;
+
+    /* Feedback — erro */
+    --danger: #c0392b;
+    --danger-bg: #fdf0f0;
+    --danger-border: #f5c6c6;
+
+    /* Feedback — sucesso */
+    --success: #1e7e4a;
+    --success-bg: #f0f9f4;
+    --success-border: #b7e4ca;
+
+    /* Sombras reutilizáveis */
+    --shadow-card: 0 4px 6px rgba(26,58,92,0.06), 0 20px 40px rgba(26,58,92,0.08);
+    --shadow-btn: 0 4px 14px rgba(45,106,159,0.3);
+    --shadow-btn-hover: 0 6px 18px rgba(45,106,159,0.35);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,13 +48,15 @@ body {
     min-height: 100vh;
 }
 
-/* Layout */
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+
 .app {
     display: flex;
     min-height: 100vh;
 }
 
-/* Sidebar */
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+
 .sidebar {
     width: 230px;
     min-height: 100vh;
@@ -42,7 +67,6 @@ body {
     box-shadow: 4px 0 24px rgba(26,58,92,0.18);
 }
 
-/* Logo / Brand */
 .sidebar-brand {
     padding: 1.8rem 1.5rem 1.4rem;
     display: flex;
@@ -72,7 +96,6 @@ body {
     letter-spacing: .02em;
 }
 
-/* Nav section label */
 .nav-section {
     font-size: .65rem;
     font-weight: 700;
@@ -117,7 +140,7 @@ nav {
     font-weight: 600;
 }
 
-/* Tooltip on active item */
+/* Indicador visual do item ativo */
 .nav-item.active::after {
     content: '';
     position: absolute;
@@ -145,7 +168,6 @@ nav {
     opacity: 1;
 }
 
-/* Sidebar footer */
 .sidebar-footer {
     margin-top: auto;
     padding: 1rem 1.25rem;
@@ -155,7 +177,8 @@ nav {
     text-align: center;
 }
 
-/* Conteúdo principal */
+/* ── Conteúdo principal ───────────────────────────────────────────────────── */
+
 .content {
     flex: 1;
     padding: 2.5rem 2.5rem;
@@ -180,4 +203,93 @@ nav {
     font-size: .88rem;
     color: var(--muted);
     display: block;
+}
+
+/* ── Utilitários globais ─────────────────────────────────────────────────── */
+
+/* Link de retorno usado em páginas de formulário (cadastro, editar) */
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: .6rem;
+    padding: .38rem .85rem .38rem .55rem;
+    border-radius: 99px;
+    border: 1.5px solid transparent;
+    transition: color .2s, background .2s, border-color .2s;
+}
+
+.btn-voltar:hover {
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+}
+
+/* Seta independente do tamanho do texto */
+.btn-voltar-seta {
+    font-size: 1.25rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    transition: transform .2s;
+}
+
+.btn-voltar:hover .btn-voltar-seta {
+    transform: translateX(-4px);
+}
+
+/* Asterisco de campo obrigatório em formulários */
+.obrigatorio {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* Botão primário — usado em formulários (button.btn-primary) e links de ação (a.btn-primary) */
+.btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: .98rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: .02em;
+    text-decoration: none;
+    transition: background .2s, transform .1s, box-shadow .2s;
+    box-shadow: var(--shadow-btn);
+}
+
+.btn-primary:hover { background: var(--accent-hover); box-shadow: var(--shadow-btn-hover); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
+
+/* Componente de feedback de formulários (sucesso e erro) */
+#mensagem {
+    font-size: .88rem;
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    display: none;
+    font-weight: 500;
+}
+
+#mensagem p { margin: .2rem 0; }
+
+#mensagem.sucesso {
+    display: block;
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1.5px solid var(--success-border);
+}
+
+#mensagem.erro {
+    display: block;
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1.5px solid var(--danger-border);
 }
