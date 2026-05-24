@@ -11,7 +11,12 @@ public class ViewController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/dashboard";
+        return "redirect:/login";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "forward:/login.html";
     }
 
     @GetMapping("/cadastro")

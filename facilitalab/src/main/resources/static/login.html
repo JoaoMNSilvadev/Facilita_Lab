@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login – Facilita Lab</title>
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+</head>
+
+<body>
+
+<!-- Botão temporário — acesso sem autenticação para testes -->
+<a href="/dashboard" class="btn-skip">&#9654; Entrar sem login (remover dps)</a>
+
+<div id="splash">
+    <div class="splash-content">
+        <div class="login-brand-icon">&#129463;</div>
+        <p class="splash-title">Facilita <span>Lab</span></p>
+        <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    </div>
+</div>
+
+<div id="login-screen" class="login-wrapper">
+    <div class="login-card">
+
+        <div class="login-brand">
+            <div class="login-brand-icon">&#129463;</div>
+            <h1>Boas vindas a <span class="brand-name">Facilita Lab.</span></h1>
+            <p>Acesse sua conta para continuar</p>
+        </div>
+
+        <div class="login-fields">
+            <div class="login-field">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="seu@email.com" />
+            </div>
+            <div class="login-field">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="••••••••" />
+            </div>
+        </div>
+
+        <button id="btnLogin" class="btn-primary" onclick="login()">Entrar</button>
+
+        <div id="mensagem"></div>
+
+    </div>
+</div>
+
+<script src="/js/login.js"></script>
+</body>
+
+</html>

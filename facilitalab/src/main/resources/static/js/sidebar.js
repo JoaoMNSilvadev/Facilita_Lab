@@ -16,3 +16,10 @@ async function carregarSidebar() {
 }
 
 carregarSidebar();
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('nome');
+    localStorage.removeItem('perfil');
+    window.location.href = '/login';
+}
