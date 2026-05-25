@@ -70,21 +70,22 @@ function mostrar(el, textos, tipo) {
     el.style.display = 'block';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const splash      = document.getElementById('splash');
-    const loginScreen = document.getElementById('login-screen');
-
-    // Splash sai com fade + slide up após a barra de progresso (~2s)
+/* ─── Animação da splash — CSS puro, sem dependências externas ─── */
+window.addEventListener('load', () => {
     setTimeout(() => {
-        splash.classList.add('hide');
+        // Dispara todas as animações CSS da splash via classe
+        document.body.classList.add('playing');
 
-        // Login entra logo depois do splash sair
+        // Exibe o login 4900ms depois (splash começa a sair em 4500ms)
         setTimeout(() => {
-            loginScreen.classList.add('show');
-        }, 400);
-    }, 2000);
+            document.getElementById('login-screen').classList.add('show');
+        }, 4900);
 
-    // Permite submeter com Enter em qualquer campo do formulário
+    }, 400);
+});
+
+// Permite submeter com Enter em qualquer campo do formulário
+document.addEventListener('DOMContentLoaded', () => {
     ['email', 'senha'].forEach(id => {
         document.getElementById(id).addEventListener('keydown', e => {
             if (e.key === 'Enter') login();
