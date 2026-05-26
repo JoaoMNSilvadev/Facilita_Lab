@@ -115,7 +115,7 @@ async function salvar() {
         });
 
         if (res.status === 200) {
-            window.location.href = '/lista';
+            window.location.href = '/lista-usuarios';
         } else if (res.status === 400) {
             try {
                 const errosBack = await res.json();

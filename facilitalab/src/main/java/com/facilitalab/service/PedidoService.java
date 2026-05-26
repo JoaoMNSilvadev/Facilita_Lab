@@ -36,6 +36,7 @@ public class PedidoService {
             saida.setObservacoes(pedido.getObservacoes());
             saida.setDataCriacao(pedido.getDataCriacao());
             saida.setDataAtualizacao(pedido.getDataAtualizacao());
+            saida.setDentistaId(pedido.getDentista().getId());
             saida.setNomeDentista(pedido.getDentista().getNome());
             saida.setNomeCadista(pedido.getCadista() != null ? pedido.getCadista().getNome() : null);
             return saida;

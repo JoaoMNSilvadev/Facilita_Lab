@@ -2,7 +2,7 @@
 let todosUsuarios = [];
 
 function editar(id) {
-    window.location.href = `/editar/${id}`;
+    window.location.href = `/editar-usuario/${id}`;
 }
 
 async function deletar(id, btn) {

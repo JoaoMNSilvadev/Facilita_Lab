@@ -87,7 +87,7 @@ async function cadastrar() {
         });
 
         if (res.status === 201) {
-            window.location.href = '/lista';
+            window.location.href = '/lista-usuarios';
         } else if (res.status === 400) {
             try {
                 const errosBackend = await res.json();

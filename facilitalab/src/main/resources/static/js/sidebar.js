@@ -9,8 +9,10 @@ async function carregarSidebar() {
 
     document.querySelectorAll('.nav-item').forEach(a => {
         const href = a.getAttribute('href');
-        // /editar/* pertence à seção de lista
-        const ativo = path === href || (href === '/lista' && path.startsWith('/editar'));
+        // /editar-usuario/* pertence à seção de usuários; /editar-pedido/* à de pedidos
+        const ativo = path === href
+            || (href === '/lista-usuarios' && path.startsWith('/editar-usuario'))
+            || (href === '/lista-pedidos'  && path.startsWith('/editar-pedido'));
         a.classList.toggle('active', ativo);
     });
 }

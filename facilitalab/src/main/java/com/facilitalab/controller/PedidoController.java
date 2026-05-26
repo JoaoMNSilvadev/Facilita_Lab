@@ -57,12 +57,6 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.buscarTodosPedidos());
     }
 
-    // GET /pedidos/triagem
-    @GetMapping("/triagem")
-    public ResponseEntity<List<PedidoSaidaDTO>> listarPedidosAguardandoTriagem() {
-        return ResponseEntity.ok(pedidoService.buscarPedidosPorEstado(EstadoEnum.AGUARDANDO_TRIAGEM));
-    }
-    
     // GET /pedidos/prioridade
     @GetMapping("/prioridade")
     public ResponseEntity<List<PedidoSaidaDTO>> listarPedidosPorPrioridade(@RequestParam PrioridadeEnum prioridade) {

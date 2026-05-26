@@ -28,6 +28,8 @@ public class PedidoSaidaDTO {
 
     private EstadoEnum estado;
 
+    private Long dentistaId;
+
     private String nomeDentista;
 
     private String nomeCadista;

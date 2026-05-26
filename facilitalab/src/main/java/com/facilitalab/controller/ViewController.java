@@ -4,8 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// Sem Thymeleaf: os métodos fazem forward para arquivos estáticos em static/.
-// Model foi removido pois não há mais variáveis sendo passadas ao template.
 @Controller
 public class ViewController {
 
@@ -15,28 +13,28 @@ public class ViewController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "forward:/login.html";
-    }
-
-    @GetMapping("/cadastro")
-    public String cadastro() {
-        return "forward:/cadastro-usuario.html";
-    }
-
-    @GetMapping("/lista")
-    public String lista() {
-        return "forward:/lista-usuario.html";
-    }
+    public String login() {return "forward:/login.html";}
 
     @GetMapping("/dashboard")
-    public String dashboard() {
-        return "forward:/dashboard.html";
-    }
+    public String dashboard() {return "forward:/dashboard.html";}
 
-    // O id não é mais usado aqui — a página editar-usuario.js extrai o id do pathname
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id) {
-        return "forward:/editar-usuario.html";
+    @GetMapping("/cadastro-usuario")
+    public String cadastroUsuario() {return "forward:/cadastro-usuario.html";}
+    @GetMapping("/lista-usuarios")
+    public String listaUsuarios() {return "forward:/lista-usuario.html"; }
+    @GetMapping("/editar-usuario/{id}")
+    public String editarUsuario(@PathVariable Long id) {return "forward:/editar-usuario.html"; }
+
+    @GetMapping("/cadastro-pedido")
+    public String cadastroPedido() {
+        return "forward:/cadastro-pedido.html";
+    }
+    @GetMapping("/lista-pedidos")
+    public String listaPedidos() {
+        return "forward:/lista-pedido.html";
+    }
+    @GetMapping("/editar-pedido/{id}")
+    public String editarPedido(@PathVariable Long id) {
+        return "forward:/editar-pedido.html";
     }
 }

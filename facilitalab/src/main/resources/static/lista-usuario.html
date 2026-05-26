@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Usuários – Facilita Lab</title>
     <link rel="stylesheet" href="/css/layout.css" />
-    <link rel="stylesheet" href="/css/lista-usuario.css" />
+    <link rel="stylesheet" href="/css/lista.css" />
 </head>
 
 <body>
@@ -21,7 +21,7 @@
                         <h1>Usuários Cadastrados</h1>
                         <span class="page-sub">Lista de todos os usuários do sistema</span>
                     </div>
-                    <a href="/cadastro" class="btn-primary btn-novo">+ Cadastrar novo usuário</a>
+                    <a href="/cadastro-usuario" class="btn-primary btn-novo">+ Cadastrar novo usuário</a>
                 </div>
             </div>
 
@@ -57,3 +57,43 @@
 </body>
 
 </html>
+
+<!-- Incongruências para avaliar (5 e 6 corrigidas)
+
+  1. criarPedido ignora prioridade do DTO
+  PedidoCreateDTO tem o campo prioridade com @NotNull, mas PedidoService.criarPedido() hardcoda sempre
+  PrioridadeEnum.NORMAL, ignorando o que o cliente enviar.
+  PedidoService.java:57
+
+  ---
+  2. criarPedido ignora cadistaId do DTO
+  PedidoCreateDTO aceita cadistaId, mas o serviço nunca atribui o cadista na criação — ele só é atribuído via
+  atualizarEstadoPedido quando o pedido entra em EM_ANALISE.
+  PedidoService.java:46–62
+
+  ---
+  3. PUT /pedidos/{id} sem @Valid
+  PedidoController.atualizarPedido() não tem a anotação @Valid no @RequestBody, então as validações @NotBlank, @NotNull
+  e @Future do DTO não são executadas na atualização — comportamento diferente do UsuarioController que usa @Valid em
+  todos os endpoints.
+  PedidoController.java:95
+
+  ---
+  4. PedidoController sem @ExceptionHandler
+  Diferente do UsuarioController, o PedidoController não trata exceções de validação (MethodArgumentNotValidException)
+  nem de recurso não encontrado (RuntimeException), o que faz erros retornarem em formato bruto em vez do padrão
+  {"errors": [...]}.
+  PedidoController.java (arquivo inteiro)
+
+  ---
+  5. Rotas duplicadas
+  GET /pedidos/triagem e GET /pedidos/estado?estado=AGUARDANDO_TRIAGEM chamam exatamente o mesmo método do serviço com o
+   mesmo argumento.
+  PedidoController.java:62–64 e 79–82
+
+  ---
+  6. PedidoSaidaDTO retorna nomeDentista (String) em vez do dentistaId (Long)
+  Impede a pré-seleção confiável do dentista na tela de edição, pois sem o ID não há como saber qual opção do <select>
+  corresponde ao dentista atual. O workaround aplicado no frontend foi comparar por nome (d.nome === nomeDentistaAtual),
+   que falha se dois dentistas tiverem o mesmo nome.
+  PedidoSaidaDTO.java:32 -->
