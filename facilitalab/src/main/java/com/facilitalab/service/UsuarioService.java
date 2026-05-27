@@ -154,4 +154,9 @@ public class UsuarioService {
                 usuario.getCro()
         );
     }
+
+     public Usuario buscarEntidadePorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com e-mail: " + email));
+    }
 }

@@ -9,18 +9,26 @@ import org.springframework.validation.FieldError;
 
 import com.facilitalab.dtos.LoginRequestDTO;
 import com.facilitalab.dtos.LoginResponseDTO;
+import com.facilitalab.dtos.RecuperarSenhaRequestDTO;
+import com.facilitalab.dtos.RedefinirSenhaRequestDTO;
 import com.facilitalab.service.AuthService;
+import com.facilitalab.service.RecuperacaoSenhaService;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-    public AuthController(AuthService authService) {
+    private final RecuperacaoSenhaService recuperacaoSenhaService;
+    public AuthController(AuthService authService, RecuperacaoSenhaService recuperacaoSenhaService) {
         this.authService = authService;
+        this.recuperacaoSenhaService = recuperacaoSenhaService;
     }
 
     @PostMapping("/login")
@@ -42,4 +50,17 @@ public class AuthController {
                 .stream().map(FieldError::getDefaultMessage).toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", erros));
     }
+
+    @PostMapping("/recuperar-senha")
+    public ResponseEntity<Void>solicitarRecuperacao(@RequestBody @Valid RecuperarSenhaRequestDTO request){
+        recuperacaoSenhaService.solicitarRecuperacao(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/redefinir-senha")
+    public ResponseEntity<Void> redefinirSenha(@RequestBody @Valid RedefinirSenhaRequestDTO request){
+        recuperacaoSenhaService.redefinirSenha(request.getToken(), request.getNovaSenha());
+        return ResponseEntity.ok().build();
+    }
+    
 }
