@@ -9,32 +9,37 @@ public class ViewController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/login";
-    }
+        return "redirect:/login";}
 
     @GetMapping("/login")
-    public String login() {return "forward:/login.html";}
+    public String login() {
+        return "forward:/login.html";}
 
     @GetMapping("/dashboard")
-    public String dashboard() {return "forward:/dashboard.html";}
+    public String dashboard() {
+        return "forward:/dashboard.html";}
 
     @GetMapping("/cadastro-usuario")
-    public String cadastroUsuario() {return "forward:/cadastro-usuario.html";}
+    public String cadastroUsuario() {
+        return "forward:/cadastro-usuario.html";}
+
     @GetMapping("/lista-usuarios")
-    public String listaUsuarios() {return "forward:/lista-usuario.html"; }
+    public String listaUsuarios() {
+        return "forward:/lista-usuario.html";}
+
     @GetMapping("/editar-usuario/{id}")
-    public String editarUsuario(@PathVariable Long id) {return "forward:/editar-usuario.html"; }
+    public String editarUsuario(@PathVariable Long id) {
+        return "forward:/editar-usuario.html";}
 
     @GetMapping("/cadastro-pedido")
     public String cadastroPedido() {
-        return "forward:/cadastro-pedido.html";
-    }
+        return "forward:/cadastro-pedido.html";}
+
     @GetMapping("/lista-pedidos")
     public String listaPedidos() {
-        return "forward:/lista-pedido.html";
-    }
+        return "forward:/lista-pedido.html";}
+    
     @GetMapping("/editar-pedido/{id}")
     public String editarPedido(@PathVariable Long id) {
-        return "forward:/editar-pedido.html";
-    }
+        return "forward:/editar-pedido.html";}
 }
