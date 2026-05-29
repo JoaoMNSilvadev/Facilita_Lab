@@ -1,3 +1,10 @@
 target/
 .idea/
 *.iml
+
+#Spring profile com dados sensiveis
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+
+# Arquivo de exemplo entra no repositório
+!src/main/resources/application-dev.properties.example
