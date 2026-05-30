@@ -12,7 +12,13 @@
 <body>
 
 <!-- Botão temporário — acesso sem autenticação para testes -->
-<a href="/dashboard" class="btn-skip">&#9654; Entrar sem login (remover dps)</a>
+<!-- <a href="/dashboard" class="btn-skip">&#9654; Entrar sem login (remover dps)</a> -->
+ <div class="btn-skip">
+    &#9654; Entrar como:
+    <a href="#" onclick="entrarComo('DENTISTA')">Dentista</a>
+    <a href="#" onclick="entrarComo('RECEPCAO')">Recepcao</a>
+    <a href="#" onclick="entrarComo('GESTOR')">Gestor</a>
+ </div> 
 
 <!-- ═══════════════════════════════════════
      SPLASH SCREEN

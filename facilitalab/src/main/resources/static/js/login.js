@@ -41,7 +41,9 @@ async function login() {
             localStorage.setItem('token',  data.token);
             localStorage.setItem('nome',   data.nome);
             localStorage.setItem('perfil', data.perfil);
-            window.location.href = '/dashboard';
+            
+            redirecionarPorPerfil(data.perfil);
+
         } else if (res.status === 401) {
             mostrar(msg, ['E-mail ou senha incorretos.'], 'erro');
         } else if (res.status === 400) {
@@ -62,12 +64,29 @@ async function login() {
     }
 }
 
+function redirecionarPorPerfil(perfil) {
+    const rotas = {
+        DENTISTA: '/dashboard-dentista',
+        RECEPCAO: '/dashboard-recepcao',
+        CADISTA: '/dashboard-cadista',
+        GESTOR: '/dashboard'
+    };
+    window.location.href = rotas[perfil] ?? '/dashboard'; 
+}
+
 function mostrar(el, textos, tipo) {
     el.innerHTML = Array.isArray(textos)
         ? textos.map(t => `<p>${t}</p>`).join('')
         : `<p>${textos}</p>`;
     el.className = tipo;
     el.style.display = 'block';
+}
+
+function entrarComo(perfil) {
+    localStorage.setItem('perfil', perfil);
+    localStorage.setItem('nome', 'Usuário Teste');
+    localStorage.setItem('token', 'fake-token-dev');
+    redirecionarPorPerfil(perfil);
 }
 
 /* ─── Animação da splash — CSS puro, sem dependências externas ─── */
