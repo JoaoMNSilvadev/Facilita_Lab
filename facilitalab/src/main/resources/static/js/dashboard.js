@@ -1,10 +1,18 @@
 const ESTADOS_PRODUCAO = new Set(['EM_ANALISE', 'EM_MODELAGEM', 'EM_CORRECAO', 'USINAGEM']);
 
+function authFetch(url) {
+    return fetch(url, {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    });
+}
+
 async function carregarDashboard() {
     const [resUsuarios, resPedidos] = await Promise.allSettled([
-        fetch('/usuarios'),
-        fetch('/pedidos'),
-    ]);
+    authFetch('/usuarios'),
+    authFetch('/pedidos'),
+]);
 
     if (resUsuarios.status === 'fulfilled' && resUsuarios.value.ok) {
         const lista = await resUsuarios.value.json();

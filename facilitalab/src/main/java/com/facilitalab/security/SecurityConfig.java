@@ -33,7 +33,8 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .formLogin(form -> form.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/*.html","/login", "/cadastro", "/recuperar-senha", "/redefinir-senha", "/").permitAll()
+                .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**", "/fragments/**", "/favicon.ico", "/*.html", "/login", "/cadastro", "/recuperar-senha", "/redefinir-senha", "/", "/error", "/dashboard", "/dashboard-dentista",             // ← adiciona
+    "/dashboard-recepcao", "/dashboard-cadista").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
