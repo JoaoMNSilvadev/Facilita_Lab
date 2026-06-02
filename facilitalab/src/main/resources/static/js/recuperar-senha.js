@@ -15,7 +15,7 @@ async function recuperarSenha() {
     msg.style.display = 'none';
 
     try {
-        const res = await fetch('/api/recuperar-senha', {
+        const res = await fetch('/auth/recuperar-senha', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email }),
