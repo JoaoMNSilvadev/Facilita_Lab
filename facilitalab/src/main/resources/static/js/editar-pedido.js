@@ -3,7 +3,7 @@ const id = window.location.pathname.split('/').pop();
 async function carregarDentistas(dentistaId) {
     const sel = document.getElementById('dentistaId');
     try {
-        const res = await fetch('/usuarios/perfil/DENTISTA');
+        const res = await authFetch('/usuarios/perfil/DENTISTA');
         const dentistas = await res.json();
         sel.innerHTML = '<option value="">Selecione o dentista...</option>';
         dentistas.forEach(d => {
@@ -20,7 +20,7 @@ async function carregarDentistas(dentistaId) {
 
 async function carregarPedido() {
     try {
-        const res = await fetch(`/pedidos/id/${id}`);
+        const res = await authFetch(`/pedidos/id/${id}`);
         if (!res.ok) throw new Error();
         const p = await res.json();
 
@@ -78,7 +78,7 @@ async function salvar() {
     msg.style.display = 'none';
 
     try {
-        const res = await fetch(`/pedidos/${id}`, {
+        const res = await authFetch(`/pedidos/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),

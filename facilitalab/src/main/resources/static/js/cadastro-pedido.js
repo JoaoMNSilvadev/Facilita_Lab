@@ -1,7 +1,7 @@
 async function carregarDentistas() {
     const sel = document.getElementById('dentistaId');
     try {
-        const res = await fetch('/usuarios/perfil/DENTISTA');
+        const res = await authFetch('/usuarios/perfil/DENTISTA');
         const dentistas = await res.json();
         sel.innerHTML = '<option value="">Selecione o dentista...</option>';
         dentistas.forEach(d => {
@@ -60,7 +60,7 @@ async function cadastrar() {
     msg.style.display = 'none';
 
     try {
-        const res = await fetch('/pedidos', {
+        const res = await authFetch('/pedidos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),

@@ -14,7 +14,7 @@ function atualizarCampos() {
 
 async function carregarUsuario() {
     try {
-        const res = await fetch(`/usuarios/${id}`);
+        const res = await authFetch(`/usuarios/${id}`);
         if (!res.ok) throw new Error();
         const u = await res.json();
 
@@ -108,7 +108,7 @@ async function salvar() {
     msg.style.display = 'none';
 
     try {
-        const res = await fetch(`/usuarios/${id}`, {
+        const res = await authFetch(`/usuarios/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)

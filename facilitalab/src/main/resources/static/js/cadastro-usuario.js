@@ -80,7 +80,7 @@ async function cadastrar() {
     msg.style.display = 'none';
 
     try {
-        const res = await fetch('/usuarios', {
+        const res = await authFetch('/usuarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)

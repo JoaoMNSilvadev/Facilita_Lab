@@ -12,7 +12,7 @@ async function deletar(id, btn) {
     btn.textContent = '...';
 
     try {
-        const res = await fetch(`/pedidos/${id}`, { method: 'DELETE' });
+        const res = await authFetch(`/pedidos/${id}`, { method: 'DELETE' });
         if (res.status === 204) {
             todosPedidos = todosPedidos.filter(p => p.id !== id);
             const estadoAtivo = document.querySelector('.filtro-btn.active')?.dataset.estado ?? '';
@@ -123,7 +123,7 @@ async function carregarPedidos() {
     const tabela = document.getElementById('tabela');
 
     try {
-        const res = await fetch('/pedidos');
+        const res = await authFetch('/pedidos');
         todosPedidos = await res.json();
         renderizar('');
     } catch {

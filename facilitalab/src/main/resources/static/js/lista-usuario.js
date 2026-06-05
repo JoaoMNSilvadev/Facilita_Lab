@@ -12,7 +12,7 @@ async function deletar(id, btn) {
     btn.textContent = '...';
 
     try {
-        const res = await fetch(`/usuarios/${id}`, { method: 'DELETE' });
+        const res = await authFetch(`/usuarios/${id}`, { method: 'DELETE' });
         if (res.status === 204) {
             // Remove do array e re-renderiza para manter o filtro ativo
             todosUsuarios = todosUsuarios.filter(u => u.id !== id);
@@ -94,7 +94,7 @@ async function carregarUsuarios() {
     const tabela = document.getElementById('tabela');
 
     try {
-        const res = await fetch('/usuarios');
+        const res = await authFetch('/usuarios');
         todosUsuarios = await res.json();
         renderizar('');
     } catch {
