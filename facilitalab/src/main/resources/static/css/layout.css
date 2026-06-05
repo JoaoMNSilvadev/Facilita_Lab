@@ -291,6 +291,10 @@ nav {
     color: #ffffff;
     border: none;
     border-radius: 10px;
+     width: 100%;
+    padding: .85rem;
+    font-size: 1rem;
+    text-align: center;
     font-size: .98rem;
     font-weight: 700;
     font-family: inherit;

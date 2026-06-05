@@ -317,13 +317,7 @@ body.playing #splash               { animation: splash-exit            .6s cubic
     box-shadow: 0 0 0 4px rgba(45,106,159,0.12);
 }
 
-/* ─── Botão de login ─── */
-#btnLogin {
-    width: 100%;
-    padding: .85rem;
-    font-size: 1rem;
-    text-align: center;
-}
+
 
 /* ─── Botão temporário — acesso sem autenticação ─── */
 .btn-skip {
