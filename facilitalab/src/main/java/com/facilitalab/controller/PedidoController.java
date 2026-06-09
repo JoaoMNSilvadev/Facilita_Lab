@@ -12,12 +12,18 @@ import com.facilitalab.models.EstadoEnum;
 import com.facilitalab.models.PrioridadeEnum;
 import com.facilitalab.service.PedidoService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +40,7 @@ public class PedidoController {
 
     // POST /pedidos
     @PostMapping
-    public  ResponseEntity<PedidoSaidaDTO> criarPedido(@RequestBody PedidoCreateDTO dto) {
+    public  ResponseEntity<PedidoSaidaDTO> criarPedido(@Valid @RequestBody PedidoCreateDTO dto) {
         return ResponseEntity.status(201).body(pedidoService.criarPedido(dto));
     }
 
@@ -86,7 +92,7 @@ public class PedidoController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<PedidoSaidaDTO> atualizarPedido(@PathVariable Long id, @RequestBody PedidoCreateDTO dto) {
+    public ResponseEntity<PedidoSaidaDTO> atualizarPedido(@PathVariable Long id, @Valid @RequestBody PedidoCreateDTO dto) {
     return ResponseEntity.ok(pedidoService.atualizarPedido(id, dto));
     }
 
@@ -95,6 +101,23 @@ public class PedidoController {
     public ResponseEntity<Void> deletarPedido(@PathVariable Long id) {
         pedidoService.deletarPedido(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<String>>> handleValidation(MethodArgumentNotValidException ex) {
+        List<String> erros = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", erros));
+    }
+
+    // Recurso não encontrado (busca por ID, e-mail ou CPF inexistente)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, List<String>>> handleNotFound(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("errors", List.of(ex.getMessage())));
     }
 
 
