@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
+import com.facilitalab.exception.TransicaoInvalidaException;
 import com.facilitalab.models.EstadoEnum;
 import com.facilitalab.models.PrioridadeEnum;
 import com.facilitalab.service.PedidoService;
@@ -117,6 +118,12 @@ public class PedidoController {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, List<String>>> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("errors", List.of(ex.getMessage())));
+    }
+
+    @ExceptionHandler(TransicaoInvalidaException.class)
+    public ResponseEntity<Map<String, List<String>>> handleTransicaoInvalida(TransicaoInvalidaException ex) {
+        return ResponseEntity.status(HttpStatus.valueOf(422))
                 .body(Map.of("errors", List.of(ex.getMessage())));
     }
 

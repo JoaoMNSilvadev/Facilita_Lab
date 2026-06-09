@@ -22,6 +22,7 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final EstadoTransicaoValidator estadoTransicaoValidator;
 
 
             private PedidoSaidaDTO converter(Pedido pedido) {
@@ -120,6 +121,8 @@ public class PedidoService {
                public PedidoSaidaDTO atualizarEstadoPedido(Long id, EstadoEnum novoEstado, Long cadistaId) {    
                 Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+                estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado);
     
                 pedido.setEstado(novoEstado);
 
