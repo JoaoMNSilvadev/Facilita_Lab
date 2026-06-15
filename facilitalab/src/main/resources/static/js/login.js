@@ -82,12 +82,6 @@ function mostrar(el, textos, tipo) {
     el.style.display = 'block';
 }
 
-function entrarComo(perfil) {
-    localStorage.setItem('perfil', perfil);
-    localStorage.setItem('nome', 'Usuário Teste');
-    localStorage.setItem('token', 'fake-token-dev');
-    redirecionarPorPerfil(perfil);
-}
 
 /* ─── Animação da splash — CSS puro, sem dependências externas ─── */
 window.addEventListener('load', () => {
