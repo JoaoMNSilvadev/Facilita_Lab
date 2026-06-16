@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .permitAll()
 
                         // navegação
-                        .requestMatchers("/login", "/dashboard", "/cadastro-usuario", "/lista-usuarios",
+                        .requestMatchers("/login", "/redefinir-senha", "/dashboard", "/cadastro-usuario", "/lista-usuarios",
                                 "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}")
                         .permitAll()
 

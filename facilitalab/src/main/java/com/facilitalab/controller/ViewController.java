@@ -15,6 +15,10 @@ public class ViewController {
     public String login() {
         return "forward:/login.html";}
 
+    @GetMapping("/redefinir-senha")
+    public String redefinirSenha() {
+        return "forward:/redefinir-senha.html";}
+
     @GetMapping("/dashboard")
     public String dashboard() {
         return "forward:/dashboard.html";}
