@@ -122,16 +122,20 @@ async function carregarPedidos() {
     const vazio  = document.getElementById('vazio');
     const tabela = document.getElementById('tabela');
 
-    try {
-        const res = await authFetch('/pedidos');
-        todosPedidos = await res.json();
-        renderizar('');
-    } catch {
-        vazio.textContent    = 'Erro ao carregar pedidos.';
-        vazio.style.display  = 'block';
-        tabela.style.display = 'none';
+    const perfil = localStorage.getItem('perfil')
+    const id = localStorage.getItem('id')
+    const url = perfil === 'DENTISTA' ? '/pedidos/dentista/' + id : '/pedidos';
+
+        try {
+            const res = await authFetch(url);
+            todosPedidos = await res.json();
+            renderizar('');
+        } catch {
+            vazio.textContent    = 'Erro ao carregar pedidos.';
+            vazio.style.display  = 'block';
+            tabela.style.display = 'none';
+        }
     }
-}
 
 inicializarFiltros();
 carregarPedidos();

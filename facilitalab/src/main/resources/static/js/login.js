@@ -38,6 +38,7 @@ async function login() {
 
         if (res.ok) {
             const data = await res.json();
+            localStorage.setItem('id', data.id);
             localStorage.setItem('token',  data.token);
             localStorage.setItem('nome',   data.nome);
             localStorage.setItem('perfil', data.perfil);
