@@ -44,7 +44,7 @@ public class SecurityConfig {
 
                         // navegação
                         .requestMatchers("/login", "/redefinir-senha", "/dashboard", "/cadastro-usuario", "/lista-usuarios",
-                                "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}")
+                                "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}",  "/novo-pedido", "/triagem-pedido)
                         .permitAll()
 
                         // Rotas de api Pedidos
