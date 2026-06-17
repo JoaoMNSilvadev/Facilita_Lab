@@ -13,7 +13,7 @@ import com.facilitalab.service.UsuarioService;
 
 @EnableWebSecurity
 @Configuration
-public class securityConfig {
+public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
