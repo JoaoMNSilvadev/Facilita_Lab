@@ -42,4 +42,12 @@ public class ViewController {
     @GetMapping("/editar-pedido/{id}")
     public String editarPedido(@PathVariable Long id) {
         return "forward:/editar-pedido.html";}
+
+    @GetMapping("/triagem-pedido")
+    public String triagemPedido() {
+        return "forward:/triagem-pedido.html";}
+
+    @GetMapping("/novo-pedido")
+    public String novoPedido() {
+        return "forward:/novo-pedido.html";}
 }
