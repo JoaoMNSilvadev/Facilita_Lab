@@ -59,6 +59,14 @@ public class ViewController {
     public String triagemPedido() {
         return "forward:/triagem-pedido.html";}
 
+    @GetMapping("/dashboard-recepcao")
+    public String dashboardRecepcao() {
+        return "forward:/dashboard-recepcao.html";}
+
+    @GetMapping("/lista-pedidos-recepcao")
+    public String listaPedidosRecepcao() {
+        return "forward:/lista-pedidos-recepcao.html";}
+
     @GetMapping("/novo-pedido")
     public String novoPedido() {
         return "forward:/novo-pedido.html";}

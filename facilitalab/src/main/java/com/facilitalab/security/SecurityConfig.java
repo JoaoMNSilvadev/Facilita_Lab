@@ -57,7 +57,9 @@ public class SecurityConfig {
                                                                 "/novo-pedido",
                                                                 "/triagem-pedido",
                                                                 "/dashboard-dentista",
-                                                                "/meus-pedidos")
+                                                                "/meus-pedidos",
+                                                                "/dashboard-recepcao",
+                                                                "/lista-pedidos-recepcao")
                                                 .permitAll()
 
                                                 // Rotas de api Pedidos
