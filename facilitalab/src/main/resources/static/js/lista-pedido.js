@@ -123,7 +123,15 @@ async function carregarPedidos() {
     const tabela = document.getElementById('tabela');
 
     try {
-        const res = await authFetch('/pedidos');
+        const perfil = localStorage.getItem('perfil');
+        const dentistaId = localStorage.getItem('id');
+
+        let url = '/pedidos';
+        if (perfil === 'DENTISTA' && dentistaId) {
+            url = `/pedidos/dentista/${dentistaId}`;
+        }
+
+        const res = await authFetch(url);
         todosPedidos = await res.json();
         renderizar('');
     } catch {

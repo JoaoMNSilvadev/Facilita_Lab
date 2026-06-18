@@ -11,12 +11,13 @@
 const elCorpo       = document.getElementById('corpo-triagem');
 const elTabela      = document.getElementById('tabela-triagem');
 const elVazio       = document.getElementById('vazio-triagem');
-const elModal       = document.getElementById('modal-devolucao');
+// Modal desativado para PoC - comentado até implementação após PoC
+// const elModal       = document.getElementById('modal-devolucao');
 // const elMotivo      = document.getElementById('motivoDevolucao');
 // const elErroMotivo  = document.getElementById('erroMotivo');
-const elBtnFechar   = document.getElementById('btnFecharModal');
-const elBtnCancelar = document.getElementById('btnCancelarModal');
-const elBtnConfirmar = document.getElementById('btnConfirmarDevolucao');
+// const elBtnFechar   = document.getElementById('btnFecharModal');
+// const elBtnCancelar = document.getElementById('btnCancelarModal');
+// const elBtnConfirmar = document.getElementById('btnConfirmarDevolucao');
 
 // ── Labels legíveis para os enums ───────────────────────────────────────
 // Mapa que traduz os valores dos enums do backend em texto amigável.
@@ -181,20 +182,20 @@ async function aprovar(id, btn) {
 
 // ── Modal de devolução — abrir ──────────────────────────────────────────
 // Guarda o ID do pedido e exibe o modal para o usuário digitar o motivo.
+// Desativado para PoC - TODO: implementar após PoC
 function abrirModalDevolucao(id) {
     pedidoParaDevolver = id;
     // elMotivo.value = ''; comentado para a PoC de hoje (18/10/2025)
-    limparErroModal();
-    elModal.style.display = 'flex';
+    // elModal.style.display = 'flex';
 }
 
 // ── Modal de devolução — fechar ─────────────────────────────────────────
 // Esconde o modal e limpa o estado.
+// Desativado para PoC - TODO: implementar após PoC
 function fecharModal() {
-    elModal.style.display = 'none';
+    // elModal.style.display = 'none';
     pedidoParaDevolver = null;
     // elMotivo.value = ''; comentado para a PoC de hoje (18/10/2025)
-    limparErroModal();
 }
 
 /* Remove o estado de erro do textarea do modal
@@ -223,9 +224,8 @@ async function confirmarDevolucao() {
     }
     */
 
-    limparErroModal();
-    elBtnConfirmar.disabled = true;
-    elBtnConfirmar.textContent = 'Enviando...';
+    // elBtnConfirmar.disabled = true;
+    // elBtnConfirmar.textContent = 'Enviando...';
 
     try {
         const res = await authFetch(
@@ -244,21 +244,22 @@ async function confirmarDevolucao() {
     } catch {
         showToast('Não foi possível conectar ao servidor.', 'error');
     } finally {
-        elBtnConfirmar.disabled = false;
-        elBtnConfirmar.textContent = 'Confirmar Devolução';
+        // elBtnConfirmar.disabled = false;
+        // elBtnConfirmar.textContent = 'Confirmar Devolução';
     }
 }
 
 // ── Event listeners do modal ────────────────────────────────────────────
 // Conecta os botões de fechar, cancelar e confirmar.
-elBtnFechar.addEventListener('click', fecharModal);
-elBtnCancelar.addEventListener('click', fecharModal);
-elBtnConfirmar.addEventListener('click', confirmarDevolucao);
+// Desativado para PoC - TODO: implementar após PoC
+// elBtnFechar.addEventListener('click', fecharModal);
+// elBtnCancelar.addEventListener('click', fecharModal);
+// elBtnConfirmar.addEventListener('click', confirmarDevolucao);
 
 // Fecha o modal ao clicar no overlay escuro (fora da caixa branca)
-elModal.addEventListener('click', (e) => {
-    if (e.target === elModal) fecharModal();
-});
+// elModal.addEventListener('click', (e) => {
+//     if (e.target === elModal) fecharModal();
+// });
 
 // ── Inicialização ───────────────────────────────────────────────────────
 // Carrega os pedidos assim que a página é aberta.

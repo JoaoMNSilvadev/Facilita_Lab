@@ -27,7 +27,7 @@ public class AuthService {
             throw new RuntimeException("Senha incorreta");
         }
 
-        return new LoginResponseDTO(jwtUtil.gerarToken(usuario), usuario.getNome(), usuario.getPerfil().name());
+        return new LoginResponseDTO(jwtUtil.gerarToken(usuario), usuario.getId(), usuario.getNome(), usuario.getPerfil().name());
     }
 
 

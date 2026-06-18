@@ -8,6 +8,7 @@ import lombok.Getter;
 public class LoginResponseDTO {
 
     private String token;
+    private Long id;
     private String nome;
     private String perfil;
 }

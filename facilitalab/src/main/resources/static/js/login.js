@@ -39,9 +39,10 @@ async function login() {
         if (res.ok) {
             const data = await res.json();
             localStorage.setItem('token',  data.token);
+            localStorage.setItem('id',     data.id);
             localStorage.setItem('nome',   data.nome);
             localStorage.setItem('perfil', data.perfil);
-            
+
             redirecionarPorPerfil(data.perfil);
 
         } else if (res.status === 401) {
@@ -66,7 +67,7 @@ async function login() {
 
 function redirecionarPorPerfil(perfil) {
     const rotas = {
-        DENTISTA: '/novo-pedido',   // TODO: depois colocar para foward para dashboard dentista pos PoC
+        DENTISTA: '/cadastro-pedido',   // TODO: depois colocar para foward para dashboard dentista pos PoC
         RECEPCAO: '/triagem-pedido', // esta dando foward para triagem-pedido por conta da PoC de hoje depois colocar para foward para dashboard recepção
         CADISTA: '/dashboard-cadista',
         GESTOR: '/dashboard'

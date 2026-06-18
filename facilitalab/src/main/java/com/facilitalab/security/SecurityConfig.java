@@ -18,7 +18,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
 
-    public securityConfig(JwtUtil jwtUtil, @Lazy UsuarioService usuarioService) {
+    public SecurityConfig(JwtUtil jwtUtil, @Lazy UsuarioService usuarioService) {
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
     }
@@ -44,12 +44,12 @@ public class SecurityConfig {
 
                         // navegação
                         .requestMatchers("/login", "/redefinir-senha", "/dashboard", "/cadastro-usuario", "/lista-usuarios",
-                                "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}",  "/novo-pedido", "/triagem-pedido")
+                                "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}",  "/novo-pedido", "/triagem-pedido", "/lista-pedidos")
                         .permitAll()
 
                         // Rotas de api Pedidos
                         .requestMatchers(HttpMethod.POST, "/pedidos").hasRole("DENTISTA")
-                        .requestMatchers(HttpMethod.GET, "/pedidos/dentista/{id}").hasRole("DENTISTA")
+                        .requestMatchers(HttpMethod.GET, "/pedidos/dentista/{dentistaId}").hasRole("DENTISTA")
                         .requestMatchers(HttpMethod.GET, "/pedidos/id/{id}").hasAnyRole("DENTISTA", "RECEPCAO", "CADISTA", "GESTOR")
                         .requestMatchers(HttpMethod.GET, "/pedidos/prioridade").hasAnyRole("RECEPCAO", "GESTOR")
                         .requestMatchers(HttpMethod.GET, "/pedidos/cadista/{id}").hasAnyRole("CADISTA", "GESTOR")
