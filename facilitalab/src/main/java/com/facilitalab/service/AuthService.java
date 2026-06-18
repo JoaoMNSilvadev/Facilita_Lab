@@ -13,6 +13,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+
     public AuthService(JwtUtil jwtUtil, UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.jwtUtil = jwtUtil;
         this.usuarioRepository = usuarioRepository;
@@ -27,8 +28,10 @@ public class AuthService {
             throw new RuntimeException("Senha incorreta");
         }
 
-        return new LoginResponseDTO(jwtUtil.gerarToken(usuario), usuario.getId(), usuario.getNome(), usuario.getPerfil().name());
+        return new LoginResponseDTO(
+                usuario.getId(),
+                jwtUtil.gerarToken(usuario),
+                usuario.getNome(),
+                usuario.getPerfil().name());
     }
-
-
 }

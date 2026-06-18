@@ -7,20 +7,32 @@
 
     <span class="nav-section">Menu</span>
     <nav>
+        <!-- GESTOR -->
         <a href="/dashboard" class="nav-item" data-perfil="GESTOR">
             <span class="nav-icon">⊞</span> Dashboard
         </a>
         <a href="/lista-usuarios" class="nav-item" data-perfil="GESTOR">
             <span class="nav-icon">☰</span> Usuários
         </a>
-        <a href="/lista-pedidos" class="nav-item" data-perfil="GESTOR,DENTISTA,RECEPCAO">
-            <span class="nav-icon">⊙</span> Pedidos
+        <a href="/lista-pedidos" class="nav-item" data-perfil="GESTOR">
+            <span class="nav-icon">⊙</span> Todos os Pedidos
         </a>
 
+        <!-- DENTISTA -->
+        <a href="/dashboard-dentista" class="nav-item" data-perfil="DENTISTA">
+            <span class="nav-icon">⊞</span> Meu Dashboard
+        </a>
+        <a href="/meus-pedidos" class="nav-item" data-perfil="DENTISTA">
+            <span class="nav-icon">⊙</span> Meus Pedidos
+        </a>
         <a href="/cadastro-pedido" class="nav-item" data-perfil="DENTISTA">
             <span class="nav-icon">+</span> Novo Pedido
         </a>
 
+        <!-- RECEPCAO -->
+        <a href="/lista-pedidos" class="nav-item" data-perfil="RECEPCAO">
+            <span class="nav-icon">⊙</span> Pedidos
+        </a>
         <a href="/triagem-pedido" class="nav-item" data-perfil="RECEPCAO">
             <span class="nav-icon">✎</span> Triagem
         </a>

@@ -23,6 +23,14 @@ public class ViewController {
     public String dashboard() {
         return "forward:/dashboard.html";}
 
+    @GetMapping("/dashboard-dentista")
+    public String dashboardDentista() {
+        return "forward:/dashboard-dentista.html";}
+
+    @GetMapping("/meus-pedidos")
+    public String meusPedidos() {
+        return "forward:/lista-pedido-dentista.html";}
+
     @GetMapping("/cadastro-usuario")
     public String cadastroUsuario() {
         return "forward:/cadastro-usuario.html";}
