@@ -1,63 +1,177 @@
-async function carregarDentistas() {
-    const sel = document.getElementById('dentistaId');
-    try {
-        const res = await authFetch('/usuarios/perfil/DENTISTA');
-        const dentistas = await res.json();
-        sel.innerHTML = '<option value="">Selecione o dentista...</option>';
-        dentistas.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d.id;
-            opt.textContent = d.nome;
-            sel.appendChild(opt);
-        });
-    } catch {
-        sel.innerHTML = '<option value="">Erro ao carregar dentistas</option>';
+// ==========================================================================
+// cadastro-pedido.js
+// Lógica da tela de cadastro de pedido.
+// Responsável por: validação inline campo a campo, montagem do body JSON,
+// envio via authFetch (POST /pedidos), toast de sucesso e redirect.
+// ==========================================================================
+
+// ── Referências do DOM ──────────────────────────────────────────────────
+// Captura os elementos uma única vez para evitar buscas repetidas.
+const elCor          = document.getElementById('cor');
+const elTipoProtese  = document.getElementById('tipoProtese');
+const elMaterial     = document.getElementById('material');
+const elPrioridade   = document.getElementById('prioridade');
+const elPrazoEntrega = document.getElementById('prazoEntrega');
+const elObservacoes  = document.getElementById('observacoes');
+const elBtnEnviar    = document.getElementById('btnEnviar');
+
+// ── Data mínima do prazo ────────────────────────────────────────────────
+// O prazo deve ser no mínimo amanhã. Calcula a data de amanhã e define
+// como atributo "min" do input date para impedir seleção de datas passadas.
+function definirDataMinima() {
+    const amanha = new Date();
+    amanha.setDate(amanha.getDate() + 1);
+    const yyyy = amanha.getFullYear();
+    const mm   = String(amanha.getMonth() + 1).padStart(2, '0');
+    const dd   = String(amanha.getDate()).padStart(2, '0');
+    elPrazoEntrega.setAttribute('min', `${yyyy}-${mm}-${dd}`);
+}
+
+// ── Validação inline campo a campo ──────────────────────────────────────
+// Cada função valida um campo específico, adiciona/remover a classe
+// "has-error" no .field pai e atualiza o texto de .field-error.
+// Retorna true se o campo é válido.
+
+/**
+ * Marca ou desmarca o estado de erro em um campo.
+ * @param {HTMLElement} input  — o input/select/textarea
+ * @param {string}      msg   — mensagem de erro (vazia = sem erro)
+ */
+function setFieldError(input, msg) {
+    const field = input.closest('.field');
+    const errorEl = field.querySelector('.field-error');
+    if (msg) {
+        field.classList.add('has-error');
+        errorEl.textContent = msg;
+    } else {
+        field.classList.remove('has-error');
+        errorEl.textContent = '';
     }
 }
 
-async function cadastrar() {
-    const btn = document.getElementById('btnCadastrar');
-    const msg = document.getElementById('mensagem');
+// Valida o campo Cor/Shade — obrigatório, máx. 50 caracteres
+function validarCor() {
+    const val = elCor.value.trim();
+    if (!val) {
+        setFieldError(elCor, 'A cor/shade é obrigatória.');
+        return false;
+    }
+    if (val.length > 50) {
+        setFieldError(elCor, 'Máximo de 50 caracteres.');
+        return false;
+    }
+    setFieldError(elCor, '');
+    return true;
+}
 
+// Valida o select Tipo de Prótese — obrigatório
+function validarTipoProtese() {
+    if (!elTipoProtese.value) {
+        setFieldError(elTipoProtese, 'Selecione o tipo de prótese.');
+        return false;
+    }
+    setFieldError(elTipoProtese, '');
+    return true;
+}
+
+// Valida o select Material — obrigatório
+function validarMaterial() {
+    if (!elMaterial.value) {
+        setFieldError(elMaterial, 'Selecione o material.');
+        return false;
+    }
+    setFieldError(elMaterial, '');
+    return true;
+}
+
+// Valida o select Prioridade — obrigatório
+function validarPrioridade() {
+    if (!elPrioridade.value) {
+        setFieldError(elPrioridade, 'Selecione a prioridade.');
+        return false;
+    }
+    setFieldError(elPrioridade, '');
+    return true;
+}
+
+// Valida o campo Prazo de Entrega — obrigatório e deve ser >= amanhã
+function validarPrazo() {
+    if (!elPrazoEntrega.value) {
+        setFieldError(elPrazoEntrega, 'O prazo de entrega é obrigatório.');
+        return false;
+    }
+    // Compara a data selecionada com "hoje" (sem hora) para garantir data futura
+    const amanha = new Date();
+    amanha.setDate(amanha.getDate() + 1);
+    amanha.setHours(0, 0, 0, 0);
+    const selecionada = new Date(elPrazoEntrega.value + 'T00:00:00');
+    if (selecionada < amanha) {
+        setFieldError(elPrazoEntrega, 'O prazo deve ser a partir de amanhã.');
+        return false;
+    }
+    setFieldError(elPrazoEntrega, '');
+    return true;
+}
+
+// ── Listeners de validação em tempo real ─────────────────────────────────
+// Cada campo valida ao perder o foco (blur) para feedback imediato.
+elCor.addEventListener('blur', validarCor);
+elTipoProtese.addEventListener('change', validarTipoProtese);
+elMaterial.addEventListener('change', validarMaterial);
+elPrioridade.addEventListener('change', validarPrioridade);
+elPrazoEntrega.addEventListener('change', validarPrazo);
+
+// ── Toast de notificação ────────────────────────────────────────────────
+// Exibe uma mensagem temporária no canto inferior direito da tela.
+// Tipos aceitos: 'success' (verde) e 'error' (vermelho).
+function showToast(mensagem, tipo) {
+    // Cria o container se ainda não existir no DOM
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast' + (tipo === 'error' ? ' toast--error' : '');
+    toast.textContent = mensagem;
+    container.appendChild(toast);
+
+    // Remove o toast após a animação de saída (3s total)
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ── Envio do formulário ─────────────────────────────────────────────────
+// Valida todos os campos, monta o body JSON com dentistaId vindo do
+// localStorage, envia via authFetch e trata a resposta.
+async function enviarPedido() {
+    // Executa todas as validações — usa & (não &&) para rodar todas mesmo
+    // que a primeira falhe, garantindo feedback completo ao usuário.
+    const corOk       = validarCor();
+    const tipoOk      = validarTipoProtese();
+    const materialOk  = validarMaterial();
+    const prioridadeOk = validarPrioridade();
+    const prazoOk     = validarPrazo();
+
+    if (!corOk || !tipoOk || !materialOk || !prioridadeOk || !prazoOk) {
+        return; // Há campos inválidos — não envia
+    }
+
+    // Monta o payload com os valores do formulário
     const body = {
-        cor:          document.getElementById('cor').value.trim(),
-        tipoProtese:  document.getElementById('tipoProtese').value,
-        material:     document.getElementById('material').value,
-        prazoEntrega: document.getElementById('prazoEntrega').value,
-        dentistaId:   document.getElementById('dentistaId').value
-            ? Number(document.getElementById('dentistaId').value)
-            : null,
-        observacoes:  document.getElementById('observacoes').value.trim() || null,
+        cor:          elCor.value.trim(),
+        tipoProtese:  elTipoProtese.value,
+        material:     elMaterial.value,
+        prioridade:   elPrioridade.value,
+        prazoEntrega: elPrazoEntrega.value,
+        observacoes:  elObservacoes.value.trim() || null,
+        dentistaId:   Number(localStorage.getItem('id')),
     };
 
-    const erros = [];
-
-    if (!body.cor) {
-        erros.push('A cor é obrigatória.');
-    } else if (body.cor.length > 50) {
-        erros.push('A cor deve ter no máximo 50 caracteres.');
-    }
-
-    if (!body.tipoProtese) erros.push('O tipo de prótese é obrigatório.');
-    if (!body.material)    erros.push('O material é obrigatório.');
-
-    if (!body.prazoEntrega) {
-        erros.push('O prazo de entrega é obrigatório.');
-    } else if (new Date(body.prazoEntrega + 'T00:00:00') <= new Date()) {
-        erros.push('O prazo de entrega deve ser uma data futura.');
-    }
-
-    if (!body.dentistaId) erros.push('O dentista é obrigatório.');
-
-    if (erros.length > 0) {
-        mostrar(msg, erros, 'erro');
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-    msg.className = '';
-    msg.style.display = 'none';
+    // Desabilita o botão para evitar duplo envio
+    elBtnEnviar.disabled = true;
+    elBtnEnviar.textContent = 'Enviando...';
 
     try {
         const res = await authFetch('/pedidos', {
@@ -67,31 +181,36 @@ async function cadastrar() {
         });
 
         if (res.status === 201) {
-            window.location.href = '/lista-pedidos';
+            // Sucesso — exibe toast e redireciona para a lista de pedidos
+            showToast('Pedido cadastrado com sucesso!', 'success');
+            setTimeout(() => {
+                window.location.href = '/lista-pedidos';
+            }, 1200);
         } else if (res.status === 400) {
+            // Erro de validação do backend — exibe mensagens retornadas
             try {
                 const errosBackend = await res.json();
-                mostrar(msg, errosBackend.errors ?? ['Erro de validação.'], 'erro');
+                const lista = errosBackend.errors ?? ['Erro de validação.'];
+                lista.forEach(e => showToast(e, 'error'));
             } catch {
-                mostrar(msg, ['Erro de validação.'], 'erro');
+                showToast('Erro de validação.', 'error');
             }
         } else {
-            mostrar(msg, [`Erro ${res.status}: ${await res.text()}`], 'erro');
+            // Erro genérico — mostra o status HTTP
+            const texto = await res.text();
+            showToast(`Erro ${res.status}: ${texto}`, 'error');
         }
     } catch {
-        mostrar(msg, ['Não foi possível conectar ao servidor.'], 'erro');
+        // Falha de rede — servidor fora do ar ou sem conexão
+        showToast('Não foi possível conectar ao servidor.', 'error');
     } finally {
-        btn.disabled = false;
-        btn.textContent = 'Cadastrar';
+        // Reabilita o botão independentemente do resultado
+        elBtnEnviar.disabled = false;
+        elBtnEnviar.textContent = 'Enviar para Triagem';
     }
 }
 
-function mostrar(el, textos, tipo) {
-    el.innerHTML = Array.isArray(textos)
-        ? textos.map(t => `<p>${t}</p>`).join('')
-        : `<p>${textos}</p>`;
-    el.className = tipo;
-    el.style.display = 'block';
-}
-
-carregarDentistas();
+// ── Inicialização ───────────────────────────────────────────────────────
+// Define a data mínima do prazo e conecta o botão de envio.
+definirDataMinima();
+elBtnEnviar.addEventListener('click', enviarPedido);
