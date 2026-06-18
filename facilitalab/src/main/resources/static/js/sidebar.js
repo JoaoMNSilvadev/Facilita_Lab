@@ -5,6 +5,15 @@ async function carregarSidebar() {
     const html = await res.text();
     document.getElementById('sidebar-container').innerHTML = html;
 
+    document.querySelectorAll('.nav-item').forEach(a => {
+        const perfis = a.getAttribute('data-perfil');
+        if (perfis) {
+            const perfilAtual = localStorage.getItem('perfil');
+            const temAcesso = perfis.split(',').map(p => p.trim()).includes(perfilAtual);
+            a.style.display = temAcesso ? '' : 'none';
+        }
+    });
+
     const path = window.location.pathname;
 
     document.querySelectorAll('.nav-item').forEach(a => {

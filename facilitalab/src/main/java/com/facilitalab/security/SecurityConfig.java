@@ -18,7 +18,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
 
-    public SecurityConfig(JwtUtil jwtUtil, @Lazy UsuarioService usuarioService) {
+    public securityConfig(JwtUtil jwtUtil, @Lazy UsuarioService usuarioService) {
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
     }
@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .permitAll()
 
                         // navegação
-                        .requestMatchers("/login", "/redefinir-senha", "/dashboard", "/dashboard-dentista", "/cadastro-usuario", "/lista-usuarios",
+                        .requestMatchers("/login", "/redefinir-senha", "/dashboard", "/cadastro-usuario", "/lista-usuarios",
                                 "/editar-usuario/{id}", "/cadastro-pedido", "/lista-pedidos", "/editar-pedido/{id}",  "/novo-pedido", "/triagem-pedido")
                         .permitAll()
 
