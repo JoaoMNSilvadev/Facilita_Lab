@@ -15,6 +15,13 @@ const elPrazoEntrega = document.getElementById('prazoEntrega');
 const elObservacoes  = document.getElementById('observacoes');
 const elBtnEnviar    = document.getElementById('btnEnviar');
 
+function checarId() {
+    const dentistaId = localStorage.getItem('dentistaId');
+    if (dentistaId === null || dentistaId === '') {
+        window.location.href = '/login';
+    }
+}
+
 // ── Data mínima do prazo ────────────────────────────────────────────────
 // O prazo deve ser no mínimo amanhã. Calcula a data de amanhã e define
 // como atributo "min" do input date para impedir seleção de datas passadas.

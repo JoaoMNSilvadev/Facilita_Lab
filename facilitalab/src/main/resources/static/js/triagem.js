@@ -12,8 +12,8 @@ const elCorpo       = document.getElementById('corpo-triagem');
 const elTabela      = document.getElementById('tabela-triagem');
 const elVazio       = document.getElementById('vazio-triagem');
 const elModal       = document.getElementById('modal-devolucao');
-const elMotivo      = document.getElementById('motivoDevolucao');
-const elErroMotivo  = document.getElementById('erroMotivo');
+// const elMotivo      = document.getElementById('motivoDevolucao');
+// const elErroMotivo  = document.getElementById('erroMotivo');
 const elBtnFechar   = document.getElementById('btnFecharModal');
 const elBtnCancelar = document.getElementById('btnCancelarModal');
 const elBtnConfirmar = document.getElementById('btnConfirmarDevolucao');
@@ -44,6 +44,13 @@ const PRIORIDADE_LABEL = {
 // ── Estado do modal ─────────────────────────────────────────────────────
 // Guarda o ID do pedido que está sendo devolvido enquanto o modal está aberto.
 let pedidoParaDevolver = null;
+
+function checarId() {
+    const dentistaId = localStorage.getItem('dentistaId');
+    if (dentistaId === null || dentistaId === '') {
+        window.location.href = '/login';
+    }
+}
 
 // ── Toast de notificação ────────────────────────────────────────────────
 // Exibe uma mensagem temporária no canto inferior direito.
@@ -176,7 +183,7 @@ async function aprovar(id, btn) {
 // Guarda o ID do pedido e exibe o modal para o usuário digitar o motivo.
 function abrirModalDevolucao(id) {
     pedidoParaDevolver = id;
-    elMotivo.value = '';
+    // elMotivo.value = ''; comentado para a PoC de hoje (18/10/2025)
     limparErroModal();
     elModal.style.display = 'flex';
 }
@@ -186,25 +193,27 @@ function abrirModalDevolucao(id) {
 function fecharModal() {
     elModal.style.display = 'none';
     pedidoParaDevolver = null;
-    elMotivo.value = '';
+    // elMotivo.value = ''; comentado para a PoC de hoje (18/10/2025)
     limparErroModal();
 }
 
-// Remove o estado de erro do textarea do modal
+/* Remove o estado de erro do textarea do modal
 function limparErroModal() {
     const field = elMotivo.closest('.field');
     field.classList.remove('has-error');
     elErroMotivo.textContent = '';
     elErroMotivo.style.display = 'none';
 }
+*/
 
 // ── Confirmar devolução ─────────────────────────────────────────────────
-// Valida que o motivo foi preenchido, então faz
-// PUT /pedidos/{id}/estado?novoEstado=AGUARDANDO_INFORMACOES
+// Faz PUT /pedidos/{id}/estado?novoEstado=AGUARDANDO_INFORMACOES
+// TODO: após PoC, implementar validação de motivo obrigatório
 async function confirmarDevolucao() {
-    const motivo = elMotivo.value.trim();
+   
+   // const motivo = elMotivo.value.trim();
 
-    // Validação do textarea obrigatório
+    /* Validação do textarea obrigatório
     if (!motivo) {
         const field = elMotivo.closest('.field');
         field.classList.add('has-error');
@@ -212,6 +221,7 @@ async function confirmarDevolucao() {
         elErroMotivo.style.display = 'block';
         return;
     }
+    */
 
     limparErroModal();
     elBtnConfirmar.disabled = true;

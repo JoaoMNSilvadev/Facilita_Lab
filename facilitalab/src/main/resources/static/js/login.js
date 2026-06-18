@@ -66,8 +66,8 @@ async function login() {
 
 function redirecionarPorPerfil(perfil) {
     const rotas = {
-        DENTISTA: '/dashboard-dentista',
-        RECEPCAO: '/dashboard-recepcao',
+        DENTISTA: '/novo-pedido',   // TODO: depois colocar para foward para dashboard dentista pos PoC
+        RECEPCAO: '/triagem-pedido', // esta dando foward para triagem-pedido por conta da PoC de hoje depois colocar para foward para dashboard recepção
         CADISTA: '/dashboard-cadista',
         GESTOR: '/dashboard'
     };
