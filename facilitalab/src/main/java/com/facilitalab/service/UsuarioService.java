@@ -138,7 +138,7 @@ public class UsuarioService {
     }
 
     // Remove pontos e traço para garantir que "123.456.789-01" e "12345678901" sejam tratados como o mesmo CPF
-    private String normalizarCpf(String cpf) {
+    String normalizarCpf(String cpf) {
         return cpf.replaceAll("\\D", "");
     }
 
