@@ -53,6 +53,13 @@ public class PedidoService {
         saida.setDentistaId(pedido.getDentista().getId());
         saida.setNomeDentista(pedido.getDentista().getNome());
         saida.setNomeCadista(pedido.getCadista() != null ? pedido.getCadista().getNome() : null);
+
+        if (pedido.getEstado() == EstadoEnum.AGUARDANDO_INFORMACOES) {
+            historicoRepository
+                    .findFirstByPedidoIdAndEstadoNovoOrderByDataHoraDesc(pedido.getId(),
+                            EstadoEnum.AGUARDANDO_INFORMACOES)
+                    .ifPresent(h -> saida.setMotivoDevolucao(h.getObservacao()));
+        }
         return saida;
     }
 
@@ -137,6 +144,11 @@ public class PedidoService {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
+        if (novoEstado == EstadoEnum.AGUARDANDO_INFORMACOES) {
+            throw new IllegalArgumentException(
+                    "Para devolver um pedido é obrigatório informar o motivo (PUT /pedidos/{id}/devolver).");
+        }
+
         Usuario autenticado = getUsuarioAutenticado();
         verificarAcessoDentista(pedido, autenticado);
         estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado, autenticado.getPerfil());
@@ -187,6 +199,23 @@ public class PedidoService {
                         h.getUsuario().getNome(), h.getPerfil(),
                         h.getDataHora(), h.getObservacao()))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PedidoSaidaDTO devolverPedido(Long id, String motivo) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+        Usuario autenticado = getUsuarioAutenticado();
+        estadoTransicaoValidator.validar(pedido.getEstado(), EstadoEnum.AGUARDANDO_INFORMACOES,
+                autenticado.getPerfil());
+
+        EstadoEnum anterior = pedido.getEstado();
+        pedido.setEstado(EstadoEnum.AGUARDANDO_INFORMACOES);
+        Pedido salvo = pedidoRepository.save(pedido);
+
+        registrarHistorico(salvo, anterior, EstadoEnum.AGUARDANDO_INFORMACOES, autenticado, motivo.trim());
+        return converter(salvo);
     }
 
     // DELETE

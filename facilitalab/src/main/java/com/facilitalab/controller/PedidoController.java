@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.facilitalab.dtos.DevolucaoDTO;
 import com.facilitalab.dtos.HistoricoSaidaDTO;
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
@@ -103,6 +104,21 @@ public class PedidoController {
     public ResponseEntity<PedidoSaidaDTO> atualizarPedido(@PathVariable Long id,
             @Valid @RequestBody PedidoCreateDTO dto) {
         return ResponseEntity.ok(pedidoService.atualizarPedido(id, dto));
+    }
+
+    // PUT /pedidos/{id}/devolver { "motivo": "..." }
+    @PutMapping("/{id}/devolver")
+    public ResponseEntity<PedidoSaidaDTO> devolver(@PathVariable Long id,
+            @Valid @RequestBody DevolucaoDTO dto) {
+        return ResponseEntity.ok(pedidoService.devolverPedido(id, dto.getMotivo()));
+    }
+
+    // Regra violada pelo cliente (ex.: devolução sem passar pelo endpoint com
+    // motivo)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, List<String>>> handleBadRequest(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("errors", List.of(ex.getMessage())));
     }
 
     // DELETE

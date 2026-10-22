@@ -84,6 +84,8 @@ public class SecurityConfig {
                                                 .hasAnyRole("GESTOR", "RECEPCAO")
                                                 .requestMatchers(HttpMethod.GET, "/pedidos/{id}/historico")
                                                 .hasAnyRole("DENTISTA", "RECEPCAO", "CADISTA", "GESTOR")
+                                                .requestMatchers(HttpMethod.PUT, "/pedidos/{id}/devolver")
+                                                .hasAnyRole("RECEPCAO", "GESTOR")
 
                                                 // Rota de api Usuarios
                                                 .requestMatchers(HttpMethod.POST, "/usuarios")

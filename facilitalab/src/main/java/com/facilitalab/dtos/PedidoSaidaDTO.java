@@ -45,4 +45,6 @@ public class PedidoSaidaDTO {
     private LocalDateTime dataCriacao;
 
     private LocalDateTime dataAtualizacao;
+
+    private String motivoDevolucao;
 }
