@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.facilitalab.dtos.HistoricoSaidaDTO;
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
 import com.facilitalab.exception.AcessoNegadoException;
@@ -80,6 +81,12 @@ public class PedidoController {
     @GetMapping("/estado")
     public ResponseEntity<List<PedidoSaidaDTO>> listarPedidosPorEstadoRequestParam(@RequestParam EstadoEnum estado) {
         return ResponseEntity.ok(pedidoService.buscarPedidosPorEstado(estado));
+    }
+
+    // GET /pedidos/{id}/historico
+    @GetMapping("/{id}/historico")
+    public ResponseEntity<List<HistoricoSaidaDTO>> buscarHistorico(@PathVariable Long id) {
+        return ResponseEntity.ok(pedidoService.buscarHistorico(id));
     }
 
     // UPDATE /{id}/estado

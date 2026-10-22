@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.facilitalab.dtos.HistoricoSaidaDTO;
+import com.facilitalab.models.HistoricoPedido;
+import com.facilitalab.repository.HistoricoPedidoRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
 import com.facilitalab.exception.AcessoNegadoException;
@@ -20,12 +25,14 @@ import com.facilitalab.repository.UsuarioRepository;
 @Service
 public class PedidoService {
 
+    private final HistoricoPedidoRepository historicoRepository;
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
     private final EstadoTransicaoValidator estadoTransicaoValidator;
 
     public PedidoService(PedidoRepository pedidoRepository, UsuarioRepository usuarioRepository,
-            EstadoTransicaoValidator estadoTransicaoValidator) {
+            EstadoTransicaoValidator estadoTransicaoValidator, HistoricoPedidoRepository historicoRepository) {
+        this.historicoRepository = historicoRepository;
         this.pedidoRepository = pedidoRepository;
         this.usuarioRepository = usuarioRepository;
         this.estadoTransicaoValidator = estadoTransicaoValidator;
@@ -50,6 +57,7 @@ public class PedidoService {
     }
 
     // CREATE
+    @Transactional
     public PedidoSaidaDTO criarPedido(PedidoCreateDTO dto) {
         Usuario autenticado = getUsuarioAutenticado();
 
@@ -66,7 +74,9 @@ public class PedidoService {
         pedido.setPrioridade(PrioridadeEnum.NORMAL);
         pedido.setEstado(EstadoEnum.AGUARDANDO_TRIAGEM);
 
-        return converter(pedidoRepository.save(pedido));
+        Pedido salvo = pedidoRepository.save(pedido);
+        registrarHistorico(salvo, null, EstadoEnum.AGUARDANDO_TRIAGEM, autenticado, null);
+        return converter(salvo);
     }
 
     // READ - por ID
@@ -122,6 +132,7 @@ public class PedidoService {
     }
 
     // UPDATE - estado
+    @Transactional
     public PedidoSaidaDTO atualizarEstadoPedido(Long id, EstadoEnum novoEstado, Long cadistaId) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
@@ -130,6 +141,7 @@ public class PedidoService {
         verificarAcessoDentista(pedido, autenticado);
         estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado, autenticado.getPerfil());
 
+        EstadoEnum estadoAnterior = pedido.getEstado(); // <-- novo
         pedido.setEstado(novoEstado);
 
         // Atribui o cadista quando o pedido entra em análise
@@ -140,6 +152,7 @@ public class PedidoService {
         }
 
         Pedido salvo = pedidoRepository.save(pedido);
+        registrarHistorico(salvo, estadoAnterior, novoEstado, autenticado, null); // <-- novo
         return converter(salvo);
     }
 
@@ -163,12 +176,32 @@ public class PedidoService {
         return converter(pedidoRepository.save(pedido));
     }
 
+    public List<HistoricoSaidaDTO> buscarHistorico(Long pedidoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        verificarAcessoDentista(pedido, getUsuarioAutenticado());
+
+        return historicoRepository.findByPedidoIdOrderByDataHoraAsc(pedidoId).stream()
+                .map(h -> new HistoricoSaidaDTO(
+                        h.getId(), h.getEstadoAnterior(), h.getEstadoNovo(),
+                        h.getUsuario().getNome(), h.getPerfil(),
+                        h.getDataHora(), h.getObservacao()))
+                .collect(Collectors.toList());
+    }
+
     // DELETE
+    @Transactional
     public void deletarPedido(Long id) {
         if (!pedidoRepository.existsById(id)) {
             throw new RuntimeException("Pedido não encontrado");
         }
+        historicoRepository.deleteByPedidoId(id);
         pedidoRepository.deleteById(id);
+    }
+
+    private void registrarHistorico(Pedido pedido, EstadoEnum anterior, EstadoEnum novo,
+            Usuario usuario, String observacao) {
+        historicoRepository.save(new HistoricoPedido(pedido, anterior, novo, usuario, observacao));
     }
 
     private Usuario getUsuarioAutenticado() {
