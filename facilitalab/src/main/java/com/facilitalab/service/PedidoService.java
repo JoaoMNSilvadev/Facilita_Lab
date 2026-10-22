@@ -17,15 +17,19 @@ import com.facilitalab.models.Usuario;
 import com.facilitalab.repository.PedidoRepository;
 import com.facilitalab.repository.UsuarioRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
     private final EstadoTransicaoValidator estadoTransicaoValidator;
+
+    public PedidoService(PedidoRepository pedidoRepository, UsuarioRepository usuarioRepository,
+            EstadoTransicaoValidator estadoTransicaoValidator) {
+        this.pedidoRepository = pedidoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.estadoTransicaoValidator = estadoTransicaoValidator;
+    }
 
     private PedidoSaidaDTO converter(Pedido pedido) {
         PedidoSaidaDTO saida = new PedidoSaidaDTO();
@@ -122,7 +126,9 @@ public class PedidoService {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado);
+        Usuario autenticado = getUsuarioAutenticado();
+        verificarAcessoDentista(pedido, autenticado);
+        estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado, autenticado.getPerfil());
 
         pedido.setEstado(novoEstado);
 

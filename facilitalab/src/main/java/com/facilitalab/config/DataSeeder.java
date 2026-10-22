@@ -8,16 +8,19 @@ import com.facilitalab.models.PerfilEnum;
 import com.facilitalab.models.Usuario;
 import com.facilitalab.repository.UsuarioRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public DataSeeder(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void run(String... args) {

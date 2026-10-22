@@ -15,7 +15,6 @@ import com.facilitalab.models.PrioridadeEnum;
 import com.facilitalab.service.PedidoService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
@@ -32,10 +31,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/pedidos")
-@RequiredArgsConstructor
 public class PedidoController {
 
     private final PedidoService pedidoService;
+
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
 
     // POST /pedidos
     @PostMapping

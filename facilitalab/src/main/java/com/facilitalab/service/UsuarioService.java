@@ -12,15 +12,18 @@ import com.facilitalab.models.PerfilEnum;
 import com.facilitalab.models.Usuario;
 import com.facilitalab.repository.UsuarioRepository;
 
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     // BCryptPasswordEncoder registrado em SecurityConfig
     private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // CREATE
     public UsuarioSaidaDTO criar(UsuarioCreateDTO dto) {
