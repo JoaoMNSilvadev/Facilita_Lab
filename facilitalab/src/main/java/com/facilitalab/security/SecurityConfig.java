@@ -40,7 +40,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**",
                                                                 "/fragments/**", "/*.html",
                                                                 "/favicon.ico",
-                                                                "/", "/error")
+                                                                "/", "/error",
+                                                                "/swagger-ui/**", "/swagger-ui.html",
+                                                                "/v3/api-docs", "/v3/api-docs/**")
                                                 .permitAll()
 
                                                 // navegação
