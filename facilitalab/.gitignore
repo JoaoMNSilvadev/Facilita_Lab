@@ -1,6 +1,8 @@
+uploads/
 target/
 .idea/
 *.iml
+
 
 #Spring profile com dados sensiveis
 src/main/resources/application-dev.properties

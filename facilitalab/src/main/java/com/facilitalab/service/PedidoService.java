@@ -10,6 +10,7 @@ import com.facilitalab.dtos.HistoricoSaidaDTO;
 import com.facilitalab.models.HistoricoPedido;
 import com.facilitalab.repository.HistoricoPedidoRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
@@ -18,6 +19,7 @@ import com.facilitalab.models.EstadoEnum;
 import com.facilitalab.models.Pedido;
 import com.facilitalab.models.PerfilEnum;
 import com.facilitalab.models.PrioridadeEnum;
+import com.facilitalab.models.TipoArquivoEnum;
 import com.facilitalab.models.Usuario;
 import com.facilitalab.repository.PedidoRepository;
 import com.facilitalab.repository.UsuarioRepository;
@@ -29,13 +31,15 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
     private final EstadoTransicaoValidator estadoTransicaoValidator;
+    private final ArquivoPedidoService arquivoService;
 
     public PedidoService(PedidoRepository pedidoRepository, UsuarioRepository usuarioRepository,
-            EstadoTransicaoValidator estadoTransicaoValidator, HistoricoPedidoRepository historicoRepository) {
+            EstadoTransicaoValidator estadoTransicaoValidator, HistoricoPedidoRepository historicoRepository, ArquivoPedidoService arquivoService   ) {
         this.historicoRepository = historicoRepository;
         this.pedidoRepository = pedidoRepository;
         this.usuarioRepository = usuarioRepository;
         this.estadoTransicaoValidator = estadoTransicaoValidator;
+        this.arquivoService = arquivoService;   
     }
 
     private PedidoSaidaDTO converter(Pedido pedido) {
@@ -65,26 +69,29 @@ public class PedidoService {
 
     // CREATE
     @Transactional
-    public PedidoSaidaDTO criarPedido(PedidoCreateDTO dto) {
-        Usuario autenticado = getUsuarioAutenticado();
+public PedidoSaidaDTO criarPedido(PedidoCreateDTO dto, MultipartFile arquivo) {
+    arquivoService.validarArquivo(arquivo);   // RF-07: sem STL válido, nada é criado
 
-        Usuario dentista = usuarioRepository.findById(autenticado.getId())
-                .orElseThrow(() -> new RuntimeException("Dentista não encontrado: " + autenticado.getId()));
+    Usuario autenticado = getUsuarioAutenticado();
 
-        Pedido pedido = new Pedido();
-        pedido.setCor(dto.getCor());
-        pedido.setMaterial(dto.getMaterial());
-        pedido.setTipoProtese(dto.getTipoProtese());
-        pedido.setPrazoEntrega(dto.getPrazoEntrega());
-        pedido.setDentista(dentista);
-        pedido.setObservacoes(dto.getObservacoes());
-        pedido.setPrioridade(PrioridadeEnum.NORMAL);
-        pedido.setEstado(EstadoEnum.AGUARDANDO_TRIAGEM);
+    Usuario dentista = usuarioRepository.findById(autenticado.getId())
+            .orElseThrow(() -> new RuntimeException("Dentista não encontrado: " + autenticado.getId()));
 
-        Pedido salvo = pedidoRepository.save(pedido);
-        registrarHistorico(salvo, null, EstadoEnum.AGUARDANDO_TRIAGEM, autenticado, null);
-        return converter(salvo);
-    }
+    Pedido pedido = new Pedido();
+    pedido.setCor(dto.getCor());
+    pedido.setMaterial(dto.getMaterial());
+    pedido.setTipoProtese(dto.getTipoProtese());
+    pedido.setPrazoEntrega(dto.getPrazoEntrega());
+    pedido.setDentista(dentista);
+    pedido.setObservacoes(dto.getObservacoes());
+    pedido.setPrioridade(PrioridadeEnum.NORMAL);
+    pedido.setEstado(EstadoEnum.AGUARDANDO_TRIAGEM);
+
+    Pedido salvo = pedidoRepository.save(pedido);
+    arquivoService.armazenar(salvo, arquivo, TipoArquivoEnum.STL_ORIGINAL, autenticado);
+    registrarHistorico(salvo, null, EstadoEnum.AGUARDANDO_TRIAGEM, autenticado, null);
+    return converter(salvo);
+}
 
     // READ - por ID
     public PedidoSaidaDTO buscarPedidoPorId(Long id) {
@@ -220,13 +227,14 @@ public class PedidoService {
 
     // DELETE
     @Transactional
-    public void deletarPedido(Long id) {
-        if (!pedidoRepository.existsById(id)) {
-            throw new RuntimeException("Pedido não encontrado");
-        }
-        historicoRepository.deleteByPedidoId(id);
-        pedidoRepository.deleteById(id);
+public void deletarPedido(Long id) {
+    if (!pedidoRepository.existsById(id)) {
+        throw new RuntimeException("Pedido não encontrado");
     }
+    arquivoService.removerDoPedido(id);
+    historicoRepository.deleteByPedidoId(id);
+    pedidoRepository.deleteById(id);
+}  
 
     private void registrarHistorico(Pedido pedido, EstadoEnum anterior, EstadoEnum novo,
             Usuario usuario, String observacao) {
