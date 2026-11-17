@@ -83,21 +83,35 @@ public class ArquivoPedidoService {
 
     // Dentista envia um STL corrigido enquanto o pedido aguarda informações
     @Transactional
-    public ArquivoSaidaDTO enviarNovaVersao(Long pedidoId, MultipartFile arquivo) {
-        Pedido pedido = buscarPedido(pedidoId);
-        Usuario usuario = autenticado();
+public ArquivoSaidaDTO enviarNovaVersao(Long pedidoId, MultipartFile arquivo) {
+    Pedido pedido = buscarPedido(pedidoId);
+    Usuario usuario = autenticado();
+    TipoArquivoEnum tipo;
 
-        if (usuario.getPerfil() != PerfilEnum.DENTISTA) {
-            throw new AcessoNegadoException();
-        }
+    if (usuario.getPerfil() == PerfilEnum.DENTISTA) {
         verificarAcesso(pedido, usuario);
-
         if (pedido.getEstado() != EstadoEnum.AGUARDANDO_INFORMACOES) {
             throw new IllegalArgumentException(
                     "Só é possível enviar um novo STL enquanto o pedido aguarda informações.");
         }
-        return converter(armazenar(pedido, arquivo, TipoArquivoEnum.STL_ORIGINAL, usuario));
+        tipo = TipoArquivoEnum.STL_ORIGINAL;
+
+    } else if (usuario.getPerfil() == PerfilEnum.CADISTA) {
+        if (pedido.getCadista() != null && !pedido.getCadista().getId().equals(usuario.getId())) {
+            throw new AcessoNegadoException();
+        }
+        if (pedido.getEstado() != EstadoEnum.EM_MODELAGEM && pedido.getEstado() != EstadoEnum.EM_CORRECAO) {
+            throw new IllegalArgumentException(
+                    "O design só pode ser enviado enquanto o pedido está em modelagem ou correção.");
+        }
+        tipo = TipoArquivoEnum.DESIGN;
+
+    } else {
+        throw new AcessoNegadoException();
     }
+
+    return converter(armazenar(pedido, arquivo, tipo, usuario));
+}
 
     public List<ArquivoSaidaDTO> listar(Long pedidoId) {
         Pedido pedido = buscarPedido(pedidoId);
@@ -105,7 +119,22 @@ public class ArquivoPedidoService {
         return arquivoRepository.findByPedidoIdOrderByDataEnvioAsc(pedidoId).stream()
                 .map(this::converter)
                 .collect(Collectors.toList());
+                
     }
+    public int ultimaVersaoDesign(Long pedidoId) {
+    return arquivoRepository
+            .findTopByPedidoIdAndTipoOrderByVersaoDesc(pedidoId, TipoArquivoEnum.DESIGN)
+            .map(ArquivoPedido::getVersao)
+            .orElse(0);
+}
+
+// RN-03 / RN-04: só segue para aprovação com o design da versão exigida
+public void exigirDesignAtual(Pedido pedido) {
+    if (ultimaVersaoDesign(pedido.getId()) < pedido.getVersaoDesignMinima()) {
+        throw new IllegalArgumentException("Envie o arquivo de design (versão "
+                + pedido.getVersaoDesignMinima() + ") antes de enviar o pedido para aprovação.");
+    }
+}
 
     public Download baixar(Long pedidoId, Long arquivoId) {
         Pedido pedido = buscarPedido(pedidoId);

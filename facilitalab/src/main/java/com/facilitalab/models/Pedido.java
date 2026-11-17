@@ -61,6 +61,10 @@ private LocalDateTime dataAtualizacao;
 @Column(name = "prazo_entrega")
 private LocalDate prazoEntrega;
 
+@Column(name = "versao_design_minima", nullable = false,
+        columnDefinition = "integer not null default 1")
+private Integer versaoDesignMinima = 1;
+
 
 
 @PrePersist

@@ -32,6 +32,7 @@ import com.facilitalab.dtos.DevolucaoDTO;
 import com.facilitalab.dtos.HistoricoSaidaDTO;
 import com.facilitalab.dtos.PedidoCreateDTO;
 import com.facilitalab.dtos.PedidoSaidaDTO;
+import com.facilitalab.dtos.RejeicaoDTO;
 import com.facilitalab.exception.AcessoNegadoException;
 import com.facilitalab.exception.TransicaoInvalidaException;
 import com.facilitalab.models.EstadoEnum;
@@ -173,6 +174,13 @@ public class PedidoController {
     public ResponseEntity<PedidoSaidaDTO> devolver(@PathVariable Long id,
             @Valid @RequestBody DevolucaoDTO dto) {
         return ResponseEntity.ok(pedidoService.devolverPedido(id, dto.getMotivo()));
+    }
+
+    // PUT /pedidos/{id}/rejeitar-design  { "observacao": "..." }
+    @PutMapping("/{id}/rejeitar-design")
+    public ResponseEntity<PedidoSaidaDTO> rejeitarDesign(@PathVariable Long id,
+                                                         @Valid @RequestBody RejeicaoDTO dto) {
+        return ResponseEntity.ok(pedidoService.rejeitarDesign(id, dto.getObservacao()));
     }
 
     // Regra violada pelo cliente (ex.: devolução sem passar pelo endpoint com

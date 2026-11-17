@@ -47,4 +47,6 @@ public class PedidoSaidaDTO {
     private LocalDateTime dataAtualizacao;
 
     private String motivoDevolucao;
+
+    private String motivoRejeicao;
 }

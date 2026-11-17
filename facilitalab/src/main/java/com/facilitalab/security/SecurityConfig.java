@@ -66,6 +66,8 @@ public class SecurityConfig {
 
                                                 // Rotas de api Pedidos
                                                 .requestMatchers(HttpMethod.POST, "/pedidos/{id}/arquivos")
+                                                .hasAnyRole("DENTISTA", "CADISTA")
+                                                .requestMatchers(HttpMethod.PUT, "/pedidos/{id}/rejeitar-design")
                                                 .hasRole("DENTISTA")
                                                 .requestMatchers(HttpMethod.GET, "/pedidos/{id}/arquivos", "/pedidos/{id}/arquivos/{arquivoId}/download")
                                                 .hasAnyRole("DENTISTA", "RECEPCAO", "CADISTA", "GESTOR")

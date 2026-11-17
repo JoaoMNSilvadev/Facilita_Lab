@@ -42,7 +42,7 @@ public class PedidoService {
         this.arquivoService = arquivoService;   
     }
 
-    private PedidoSaidaDTO converter(Pedido pedido) {
+     private PedidoSaidaDTO converter(Pedido pedido) {
         PedidoSaidaDTO saida = new PedidoSaidaDTO();
         saida.setId(pedido.getId());
         saida.setCor(pedido.getCor());
@@ -64,6 +64,14 @@ public class PedidoService {
                             EstadoEnum.AGUARDANDO_INFORMACOES)
                     .ifPresent(h -> saida.setMotivoDevolucao(h.getObservacao()));
         }
+
+        if (pedido.getEstado() == EstadoEnum.EM_CORRECAO) {
+            historicoRepository
+                    .findFirstByPedidoIdAndEstadoNovoOrderByDataHoraDesc(pedido.getId(),
+                            EstadoEnum.EM_CORRECAO)
+                    .ifPresent(h -> saida.setMotivoRejeicao(h.getObservacao()));
+        }
+
         return saida;
     }
 
@@ -156,9 +164,17 @@ public PedidoSaidaDTO criarPedido(PedidoCreateDTO dto, MultipartFile arquivo) {
                     "Para devolver um pedido é obrigatório informar o motivo (PUT /pedidos/{id}/devolver).");
         }
 
+        if (novoEstado == EstadoEnum.EM_CORRECAO) {
+    throw new IllegalArgumentException("Para rejeitar o design é obrigatório informar a observação (PUT /pedidos/{id}/rejeitar-design).");
+}
+
         Usuario autenticado = getUsuarioAutenticado();
         verificarAcessoDentista(pedido, autenticado);
         estadoTransicaoValidator.validar(pedido.getEstado(), novoEstado, autenticado.getPerfil());
+
+        if (novoEstado == EstadoEnum.AGUARDANDO_APROVACAO_DESIGN) {
+    arquivoService.exigirDesignAtual(pedido);   // RN-03
+}
 
         EstadoEnum estadoAnterior = pedido.getEstado(); // <-- novo
         pedido.setEstado(novoEstado);
@@ -224,6 +240,27 @@ public PedidoSaidaDTO criarPedido(PedidoCreateDTO dto, MultipartFile arquivo) {
         registrarHistorico(salvo, anterior, EstadoEnum.AGUARDANDO_INFORMACOES, autenticado, motivo.trim());
         return converter(salvo);
     }
+
+    @Transactional
+public PedidoSaidaDTO rejeitarDesign(Long id, String observacao) {
+    Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+    Usuario autenticado = getUsuarioAutenticado();
+    verificarAcessoDentista(pedido, autenticado);
+    estadoTransicaoValidator.validar(pedido.getEstado(), EstadoEnum.EM_CORRECAO, autenticado.getPerfil());
+
+    int versaoRejeitada = arquivoService.ultimaVersaoDesign(id);
+    pedido.setVersaoDesignMinima(versaoRejeitada + 1);   // RN-04: passa a exigir v+1
+
+    EstadoEnum anterior = pedido.getEstado();
+    pedido.setEstado(EstadoEnum.EM_CORRECAO);
+    Pedido salvo = pedidoRepository.save(pedido);
+
+    registrarHistorico(salvo, anterior, EstadoEnum.EM_CORRECAO, autenticado,
+            "Design v" + versaoRejeitada + " rejeitado: " + observacao.trim());
+    return converter(salvo);
+}
 
     // DELETE
     @Transactional
